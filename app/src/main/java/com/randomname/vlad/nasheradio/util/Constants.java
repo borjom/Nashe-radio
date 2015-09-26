@@ -8,6 +8,7 @@ public class Constants {
 
     public interface BROADCAST_ACTION {
         public static String MUSIC_EVENT = "com.randomname.vlad.nasheradio.broadcast.music.event";
+        public static String NEW_STATUS_EVENT = "com.randomname.vlad.nasheradio.broadcast.new.status.event";
         public static String START_MUSIC = "com.randomname.vlad.nasheradio.broadcast.start.music";
         public static String STOP_MUSIC = "com.randomname.vlad.nasheradio.broadcast.stop.music";
         public static String MESSAGE = "message";

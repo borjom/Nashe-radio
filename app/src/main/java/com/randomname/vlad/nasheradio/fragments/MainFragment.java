@@ -9,7 +9,9 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.content.res.ResourcesCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.melnykov.fab.FloatingActionButton;
 import com.randomname.vlad.nasheradio.R;
 import com.randomname.vlad.nasheradio.api.NasheApi;
 import com.randomname.vlad.nasheradio.models.NasheModel;
@@ -38,7 +41,7 @@ public class MainFragment extends Fragment {
     NasheApi nasheApi;
 
 
-    @Bind(R.id.btn_play) Button playStopBtn;
+    @Bind(R.id.btn_play) FloatingActionButton playStopBtn;
     @Bind(R.id.img_album_art) ImageView albumArt;
     @Bind(R.id.text_song_name) TextView textSong;
     @Bind(R.id.text_song_author) TextView textArtist;
@@ -81,8 +84,12 @@ public class MainFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
                 new IntentFilter(Constants.BROADCAST_ACTION.MUSIC_EVENT));
+
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mNewStatusReceiver,
+                new IntentFilter(Constants.BROADCAST_ACTION.NEW_STATUS_EVENT));
 
         nasheApi.getCurrentSong(new Callback<NasheModel>() {
             @Override
@@ -102,6 +109,7 @@ public class MainFragment extends Fragment {
     public void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mNewStatusReceiver);
     }
 
     @OnClick (R.id.btn_play)
@@ -117,22 +125,35 @@ public class MainFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getStringExtra(Constants.BROADCAST_ACTION.MESSAGE).equals(Constants.BROADCAST_ACTION.START_MUSIC)) {
-                playStopBtn.setText("Стоп");
+                playStopBtn.setImageDrawable(ContextCompat.getDrawable(getActivity(), android.R.drawable.ic_media_pause));
             } else if(intent.getStringExtra(Constants.BROADCAST_ACTION.MESSAGE).equals(Constants.BROADCAST_ACTION.STOP_MUSIC)) {
-                playStopBtn.setText("Играть");
+                playStopBtn.setImageDrawable(ContextCompat.getDrawable(getActivity(), android.R.drawable.ic_media_play));
             }
+        }
+    };
+
+    private BroadcastReceiver mNewStatusReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            NasheModel model = intent.getParcelableExtra(Constants.BROADCAST_ACTION.MESSAGE);
+
+            updatePlayerInfo(model);
         }
     };
 
     public void setIsPlaying(Boolean isPlaying) {
         if (isPlaying) {
-            playStopBtn.setText("Стоп");
+            playStopBtn.setImageDrawable(ContextCompat.getDrawable(getActivity(), android.R.drawable.ic_media_pause));
         } else {
-            playStopBtn.setText("Играть");
+            playStopBtn.setImageDrawable(ContextCompat.getDrawable(getActivity(), android.R.drawable.ic_media_play));
         }
     }
 
     public void updatePlayerInfo(NasheModel nasheModel) {
+        if (textArtist.getText().equals(nasheModel.getArtist())) {
+            return;
+        }
+
         Picasso.with(getActivity())
                 .load(nasheModel.getArt())
                 .noPlaceholder()

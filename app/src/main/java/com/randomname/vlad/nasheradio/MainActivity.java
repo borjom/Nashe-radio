@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Main
             Intent stopIntent = new Intent(MainActivity.this, MusicService.class);
             stopService(stopIntent);
         }
+
+        mService.isAttached = false;
     }
 
     @Override
@@ -91,6 +93,8 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Main
             mBound = true;
 
             musicFragment.setIsPlaying(mService.getIsPlaying());
+
+            mService.isAttached = true;
         }
 
         @Override

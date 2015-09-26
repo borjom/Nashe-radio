@@ -18,10 +18,21 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import com.randomname.vlad.nasheradio.MainActivity;
 import com.randomname.vlad.nasheradio.R;
+import com.randomname.vlad.nasheradio.api.NasheApi;
+import com.randomname.vlad.nasheradio.models.NasheModel;
 import com.randomname.vlad.nasheradio.util.Constants;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class MusicService extends Service implements MediaPlayer.OnErrorListener, MediaPlayer.OnPreparedListener, AudioManager.OnAudioFocusChangeListener {
 
@@ -30,15 +41,20 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
     private Notification notification;
 
     private MediaPlayer player;
-    WifiManager.WifiLock wifiLock;
-    AudioManager audioManager;
-    private int volumeLevel = 0;
+    private WifiManager.WifiLock wifiLock;
+    private AudioManager audioManager;
 
+    private Timer updateTimer;
 
     private Boolean isPlaying = false;
     private Boolean audioFocusGranted = false;
     private Boolean inPreparedState = false;
     private Boolean isInForeground = false;
+
+    public Boolean isAttached = false;
+
+    RestAdapter restAdapter;
+    NasheApi nasheApi;
 
     @Override
     public void onCreate() {
@@ -47,17 +63,82 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
         audioManager = (AudioManager) getSystemService(getApplicationContext().AUDIO_SERVICE);
         initMusicPlayer();
         initNotification();
+
+        restAdapter = new RestAdapter.Builder()
+                .setEndpoint(Constants.API.BASE_URL)
+                .build();
+
+        nasheApi = restAdapter.create(NasheApi.class);
+
+        updateTimer = new Timer();
+        startUpdating();
+    }
+
+    private void updateNotification(NasheModel nasheModel) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            notification.contentView.setTextViewText(R.id.song_name, nasheModel.getSong());
+        }
+
+        NotificationManager mNotificationManager = (NotificationManager)
+                getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
+
+        mNotificationManager.notify(
+                Constants.NOTIFICATION_ID.FOREGROUND_SERVICE,
+                notification);
+    }
+
+    private void startUpdating() {
+        updateTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if (!isInForeground || !isAttached) {
+                    return;
+                }
+                getCurrentSong();
+            }
+        }, 0, 30000);
+    }
+
+    private void stopUpdating() {
+        updateTimer.cancel();
+        updateTimer.purge();
+    }
+
+    private void getCurrentSong() {
+        nasheApi.getCurrentSong(new Callback<NasheModel>() {
+            @Override
+            public void success(NasheModel nasheModel, Response response) {
+                if (response.getStatus() == 200) {
+                    if (isPlaying) {
+                        updateNotification(nasheModel);
+                    }
+                    if (isAttached) {
+                        sendNewStatus(nasheModel);
+                    }
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+            }
+        });
+    }
+
+    private void sendNewStatus(NasheModel nasheModel) {
+        Intent intent = new Intent(Constants.BROADCAST_ACTION.NEW_STATUS_EVENT);
+        intent.putExtra(Constants.BROADCAST_ACTION.MESSAGE, nasheModel);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(Constants.LOG_TAG.SERVICE, "on start command");
 
-        if (intent.getAction() != null && intent.getAction().equals(Constants.ACTION.STOP_FOREGROUND_ACTION)) {
+        if (intent != null && intent.getAction() != null && intent.getAction().equals(Constants.ACTION.STOP_FOREGROUND_ACTION)) {
             stopPlaying();
             stopForeground(true);
             isInForeground = false;
-        } else if (intent.getAction() != null && intent.getAction().equals(Constants.ACTION.PAUSE_PLAY_ACTION)) {
+        } else if (intent != null && intent.getAction() != null && intent.getAction().equals(Constants.ACTION.PAUSE_PLAY_ACTION)) {
             toggleNotificationPausePlay();
         }
 
@@ -79,6 +160,7 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
     public void onDestroy() {
         Log.d(Constants.LOG_TAG.SERVICE, "on destroy");
         player.release();
+        stopUpdating();
         super.onDestroy();
     }
 
@@ -96,12 +178,13 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
         isPlaying = true;
         inPreparedState = false;
 
+        getCurrentSong();
+
         if (!isInForeground) {
             startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE,
                     notification);
             isInForeground = true;
         }
-
         Intent intent = new Intent(Constants.BROADCAST_ACTION.MUSIC_EVENT);
         intent.putExtra(Constants.BROADCAST_ACTION.MESSAGE, Constants.BROADCAST_ACTION.START_MUSIC);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
@@ -159,7 +242,7 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
 
         RemoteViews m_view = new RemoteViews(getApplicationContext().getPackageName(), R.layout.notification_player);
         m_view.setImageViewResource(R.id.player_pause, android.R.drawable.ic_media_pause);
-        m_view.setTextViewText(R.id.song_name, "Название песни");
+        m_view.setTextViewText(R.id.song_name, "");
         m_builder.setContent(m_view);
         m_builder.setContentIntent(pendingIntent);
 
@@ -213,7 +296,6 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
         audioManager.abandonAudioFocus(this);
         audioFocusGranted = false;
         player.stop();
-
         Intent intent = new Intent(Constants.BROADCAST_ACTION.MUSIC_EVENT);
         intent.putExtra(Constants.BROADCAST_ACTION.MESSAGE, Constants.BROADCAST_ACTION.STOP_MUSIC);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);

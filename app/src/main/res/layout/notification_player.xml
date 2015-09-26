@@ -45,7 +45,6 @@
             android:textColor="@color/accent_material_dark"
             android:text="Наше радио"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginLeft="16dp">
             <requestFocus/>
