@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="music_uris">
+        <item>http://nashe.streamr.ru/nashe-128.mp3</item>
+        <item>http://nashe.streamr.ru/nashe-64.mp3</item>
+    </string-array>
+</resources>

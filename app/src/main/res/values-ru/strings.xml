@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Наше радио</string>
+    <string name="nashe_label">НАШЕ Радио</string>
+    <string name="action_settings">Настройки</string>
+</resources>

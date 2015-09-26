@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#C62828</color>
+    <color name="primary_dark">#B71C1C</color>
+    <color name="accent">#f1f2f3</color>
+    <color name="list_item_text">#333</color>
+    <color name="toolbar_primary_text">#ffffff</color>
+    <color name="float_button">#EF5350</color>
+
+</resources>
