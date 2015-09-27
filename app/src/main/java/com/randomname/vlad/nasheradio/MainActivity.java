@@ -82,6 +82,13 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Main
 
     }
 
+    @Override
+    public void onStationChanged() {
+        if (mBound) {
+            mService.restartPlayer();
+        }
+    }
+
     private ServiceConnection mConnection = new ServiceConnection() {
 
         @Override
@@ -108,11 +115,11 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Main
                 Constants.SHARED_PREFERENCES.PREF_NAME, Context.MODE_PRIVATE);
 
         if (!prefs.contains(Constants.SHARED_PREFERENCES.CURRENT_CHANNEL)) {
-            String[] urisArray = getResources().getStringArray(R.array.music_uris);
+            String[] urisArray = Constants.STATIONS.STATIONS[0];
 
             prefs.edit().putString(
                     Constants.SHARED_PREFERENCES.CURRENT_CHANNEL,
-                    urisArray[0]
+                    urisArray[1]
                     ).apply();
         }
     }

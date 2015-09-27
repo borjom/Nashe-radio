@@ -50,6 +50,7 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
     private Boolean audioFocusGranted = false;
     private Boolean inPreparedState = false;
     private Boolean isInForeground = false;
+    private Boolean restartAfterPreparation = false;
 
     public Boolean isAttached = false;
 
@@ -169,6 +170,10 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
         stopForeground(true);
         isInForeground = false;
         inPreparedState = false;
+
+        Intent intent = new Intent(Constants.BROADCAST_ACTION.MUSIC_EVENT);
+        intent.putExtra(Constants.BROADCAST_ACTION.MESSAGE, Constants.BROADCAST_ACTION.MUSIC_ERROR);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         return false;
     }
 
@@ -177,6 +182,12 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
         player.start();
         isPlaying = true;
         inPreparedState = false;
+
+        if (restartAfterPreparation) {
+            restartAfterPreparation = false;
+            stopPlaying();
+            startPlaying();
+        }
 
         getCurrentSong();
 
@@ -237,7 +248,7 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
 
         NotificationCompat.Builder m_builder = (NotificationCompat.Builder) new NotificationCompat.Builder(getApplicationContext())
                 .setContentTitle(getString(R.string.app_name))
-                .setSmallIcon(R.drawable.nashe_small)
+                .setSmallIcon(R.drawable.ic_nashe_notification)
                 .setOngoing(true);
 
         RemoteViews m_view = new RemoteViews(getApplicationContext().getPackageName(), R.layout.notification_player);
@@ -287,6 +298,10 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
         }
         player.prepareAsync();
         inPreparedState = true;
+
+        Intent intent = new Intent(Constants.BROADCAST_ACTION.MUSIC_EVENT);
+        intent.putExtra(Constants.BROADCAST_ACTION.MESSAGE, Constants.BROADCAST_ACTION.MUSIC_PREPARE);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     public void stopPlaying() {
@@ -308,6 +323,15 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
             isInForeground = false;
         } else {
             startPlaying();
+        }
+    }
+
+    public void restartPlayer() {
+        if (isPlaying && !inPreparedState) {
+            stopPlaying();
+            startPlaying();
+        } else if (inPreparedState) {
+            restartAfterPreparation = true;
         }
     }
 

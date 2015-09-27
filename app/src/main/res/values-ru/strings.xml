@@ -3,4 +3,8 @@
     <string name="app_name">Наше радио</string>
     <string name="nashe_label">НАШЕ Радио</string>
     <string name="action_settings">Настройки</string>
+    <string name="album_art_cover">Обложка альбома</string>
+    <string name="backgound_image">Фоновое изображение</string>
+    <string name="high_quality">Высокое качество</string>
+    <string name="low_quality">Низкое качество</string>
 </resources>

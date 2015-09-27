@@ -2,4 +2,8 @@
     <string name="app_name">Nashe Radio</string>
     <string name="nashe_label">NASHE Radio</string>
     <string name="action_settings">Settings</string>
+    <string name="backgound_image">Background image</string>
+    <string name="album_art_cover">Album art cover</string>
+    <string name="low_quality">Low quality</string>
+    <string name="high_quality">High quality</string>
 </resources>
