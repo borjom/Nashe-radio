@@ -18,8 +18,9 @@ public class Constants {
 
     public interface SHARED_PREFERENCES {
         public static String PREF_NAME = "nasheradio.prefs";
-        public static String CURRENT_CHANNEL = "current.channel";
+        public static String CURRENT_CHANNEL = "current.channel"; // this is url to current stream
         public static String QUALITY_STATUS = "quality.status";
+        public static String CURRENT_STATION = "current.station"; // this is current station page in viewpager
     }
 
     public interface LOG_TAG {
@@ -32,6 +33,10 @@ public class Constants {
 
     public interface API {
         public static String BASE_URL = "http://pooltools.ru/api";
+        public static String[] STATIONS = {
+                "nashe",
+                "nashe20"
+        };
     }
 
     public interface STATIONS {
@@ -39,6 +44,10 @@ public class Constants {
                 new String[] {
                     "http://nashe.streamr.ru/nashe-64.mp3",
                     "http://nashe.streamr.ru/nashe-128.mp3"
+                },
+                new String[] {
+                        "http://nashe20.streamr.ru/nashe-64.mp3",
+                        "http://nashe20.streamr.ru/nashe-128.mp3"
                 }
         };
     }

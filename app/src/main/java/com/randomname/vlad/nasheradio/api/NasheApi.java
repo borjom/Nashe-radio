@@ -4,9 +4,10 @@ import com.randomname.vlad.nasheradio.models.NasheModel;
 
 import retrofit.Callback;
 import retrofit.http.GET;
+import retrofit.http.Path;
 
 public interface NasheApi {
-    @GET("/test.php")
-    public void getCurrentSong(Callback<NasheModel> response);
+    @GET("/{channel}.php")
+    public void getCurrentSong(@Path("channel") String channel, Callback<NasheModel> response);
 }
 

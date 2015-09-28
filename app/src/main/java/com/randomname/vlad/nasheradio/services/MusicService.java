@@ -106,7 +106,12 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
     }
 
     private void getCurrentSong() {
-        nasheApi.getCurrentSong(new Callback<NasheModel>() {
+        SharedPreferences prefs = getSharedPreferences(
+                Constants.SHARED_PREFERENCES.PREF_NAME, Context.MODE_PRIVATE);
+        int currentStation = prefs.getInt(Constants.SHARED_PREFERENCES.CURRENT_STATION, 0);
+        String path = Constants.API.STATIONS[currentStation];
+
+        nasheApi.getCurrentSong(path, new Callback<NasheModel>() {
             @Override
             public void success(NasheModel nasheModel, Response response) {
                 if (response.getStatus() == 200) {
@@ -333,6 +338,8 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
         } else if (inPreparedState) {
             restartAfterPreparation = true;
         }
+
+        getCurrentSong();
     }
 
     public Boolean getIsPlaying() {

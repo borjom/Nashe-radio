@@ -14,7 +14,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.view.ViewPager;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +28,7 @@ import android.widget.Toast;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.melnykov.fab.FloatingActionButton;
 import com.randomname.vlad.nasheradio.R;
+import com.randomname.vlad.nasheradio.adapters.StationsAdapter;
 import com.randomname.vlad.nasheradio.api.NasheApi;
 import com.randomname.vlad.nasheradio.models.NasheModel;
 import com.randomname.vlad.nasheradio.util.Constants;
@@ -35,6 +38,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import butterknife.OnPageChange;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -46,14 +50,15 @@ public class MainFragment extends Fragment {
     RestAdapter restAdapter;
     NasheApi nasheApi;
 
+    StationsAdapter stationAdapter;
 
     @Bind(R.id.btn_play) FloatingActionButton playStopBtn;
-    @Bind(R.id.img_album_art) ImageView albumArt;
     @Bind(R.id.text_song_name) TextView textSong;
     @Bind(R.id.text_song_author) TextView textArtist;
     @Bind(R.id.text_bitrate_status) TextView bitrateStatus;
     @Bind(R.id.switch_quality) SwitchButton switchButton;
     @Bind(R.id.progress_bar) SmoothProgressBar progressBar;
+    @Bind(R.id.pager_stations) ViewPager stationsPager;
 
     MainFragmentCallbacks mainFragmentCallbacks;
 
@@ -89,10 +94,15 @@ public class MainFragment extends Fragment {
 
         SharedPreferences prefs = getActivity().getSharedPreferences(
                 Constants.SHARED_PREFERENCES.PREF_NAME, Context.MODE_PRIVATE);
+        stationAdapter = new StationsAdapter(getChildFragmentManager());
+        stationsPager.setAdapter(stationAdapter);
 
         Boolean status = prefs.getBoolean(Constants.SHARED_PREFERENCES.QUALITY_STATUS, true);
         switchButton.setChecked(status);
 
+        int currentStation = prefs.getInt(Constants.SHARED_PREFERENCES.CURRENT_STATION, 0);
+
+        stationsPager.setCurrentItem(currentStation);
         if (status) {
             bitrateStatus.setText(R.string.high_quality);
         } else {
@@ -111,7 +121,9 @@ public class MainFragment extends Fragment {
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mNewStatusReceiver,
                 new IntentFilter(Constants.BROADCAST_ACTION.NEW_STATUS_EVENT));
 
-        nasheApi.getCurrentSong(new Callback<NasheModel>() {
+        String path = Constants.API.STATIONS[stationsPager.getCurrentItem()];
+
+        nasheApi.getCurrentSong(path, new Callback<NasheModel>() {
             @Override
             public void success(NasheModel nasheModel, Response response) {
                 if (response.getStatus() == 200) {
@@ -144,7 +156,10 @@ public class MainFragment extends Fragment {
 
     @OnCheckedChanged (R.id.switch_quality)
     public void qualityChangedListener(SwitchButton button) {
-        String[] urisArray = Constants.STATIONS.STATIONS[0];
+
+        int currentStation = stationsPager.getCurrentItem();
+
+        String[] urisArray = Constants.STATIONS.STATIONS[currentStation];
         SharedPreferences prefs = getActivity().getSharedPreferences(
                 Constants.SHARED_PREFERENCES.PREF_NAME, Context.MODE_PRIVATE);
         String uri;
@@ -164,6 +179,29 @@ public class MainFragment extends Fragment {
                 uri
         ).putBoolean(Constants.SHARED_PREFERENCES.QUALITY_STATUS,
                 qualityStatus).apply();
+
+        mainFragmentCallbacks.onStationChanged();
+    }
+
+    @OnPageChange (R.id.pager_stations)
+    public void stationChangedListener() {
+
+        SharedPreferences prefs = getActivity().getSharedPreferences(
+                Constants.SHARED_PREFERENCES.PREF_NAME, Context.MODE_PRIVATE);
+
+        int currentStation = stationsPager.getCurrentItem();
+        Boolean currentQualityBool = prefs.getBoolean(Constants.SHARED_PREFERENCES.QUALITY_STATUS, true);
+        int currentQuality = (currentQualityBool) ? 1 : 0;
+
+        String[] urisArray = Constants.STATIONS.STATIONS[currentStation];
+
+        String uri = urisArray[currentQuality];
+
+        prefs.edit().putString(
+                Constants.SHARED_PREFERENCES.CURRENT_CHANNEL,
+                uri
+        ).putInt(Constants.SHARED_PREFERENCES.CURRENT_STATION,
+                currentStation).apply();
 
         mainFragmentCallbacks.onStationChanged();
     }
@@ -206,15 +244,10 @@ public class MainFragment extends Fragment {
     }
 
     public void updatePlayerInfo(NasheModel nasheModel) {
-        if (textArtist.getText().equals(nasheModel.getArtist())) {
-            return;
-        }
 
-        Picasso.with(getActivity())
-                .load(nasheModel.getArt())
-                .noPlaceholder()
-                .error(R.drawable.nashe_big_white)
-                .into(albumArt);
+        StationFragment currentFragment = (StationFragment) stationAdapter.instantiateItem(stationsPager, stationsPager.getCurrentItem());
+
+        currentFragment.setNewCover(nasheModel.getArt());
 
         textArtist.setText(nasheModel.getArtist());
         textSong.setText(nasheModel.getSong());
