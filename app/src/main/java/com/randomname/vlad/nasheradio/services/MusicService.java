@@ -4,8 +4,10 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -43,6 +45,7 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
     private MediaPlayer player;
     private WifiManager.WifiLock wifiLock;
     private AudioManager audioManager;
+    private PowerManager powerManager;
 
     private Timer updateTimer;
 
@@ -70,9 +73,19 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
                 .build();
 
         nasheApi = restAdapter.create(NasheApi.class);
-
+        powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         updateTimer = new Timer();
         startUpdating();
+
+        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+                    getCurrentSong();
+                }
+            }
+        }, intentFilter);
     }
 
     private void updateNotification(NasheModel nasheModel) {
@@ -92,10 +105,20 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
         updateTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if (!isInForeground || !isAttached) {
-                    return;
+                if (isInForeground || isAttached) {
+                    boolean screenOn;
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+                        screenOn = powerManager.isInteractive();
+                    } else {
+                        screenOn = powerManager.isScreenOn();
+                    }
+
+                    if (screenOn) {
+                        getCurrentSong();
+                    }
                 }
-                getCurrentSong();
+
             }
         }, 0, 30000);
     }
