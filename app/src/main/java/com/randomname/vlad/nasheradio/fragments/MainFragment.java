@@ -212,6 +212,7 @@ public class MainFragment extends Fragment {
             if (intent.getStringExtra(Constants.BROADCAST_ACTION.MESSAGE).equals(Constants.BROADCAST_ACTION.START_MUSIC)) {
                 playStopBtn.setImageDrawable(ContextCompat.getDrawable(getActivity(), android.R.drawable.ic_media_pause));
                 progressBar.progressiveStop();
+		progressBar.setVisibility(View.INVISIBLE);
             } else if(intent.getStringExtra(Constants.BROADCAST_ACTION.MESSAGE).equals(Constants.BROADCAST_ACTION.STOP_MUSIC)) {
                 playStopBtn.setImageDrawable(ContextCompat.getDrawable(getActivity(), android.R.drawable.ic_media_play));
             }
