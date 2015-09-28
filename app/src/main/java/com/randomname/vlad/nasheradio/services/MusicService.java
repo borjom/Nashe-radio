@@ -47,6 +47,8 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
     private AudioManager audioManager;
     private PowerManager powerManager;
 
+    private BroadcastReceiver powerReceiver;
+
     private Timer updateTimer;
 
     private Boolean isPlaying = false;
@@ -78,14 +80,19 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
         startUpdating();
 
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
-        registerReceiver(new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-                    getCurrentSong();
+
+        if (powerReceiver == null) {
+            new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+                        getCurrentSong();
+                    }
                 }
-            }
-        }, intentFilter);
+            };
+        }
+
+        registerReceiver(powerReceiver, intentFilter);
     }
 
     private void updateNotification(NasheModel nasheModel) {
@@ -185,6 +192,7 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
         Log.d(Constants.LOG_TAG.SERVICE, "on destroy");
         player.release();
         stopUpdating();
+        unregisterReceiver(powerReceiver);
         super.onDestroy();
     }
 
