@@ -197,7 +197,11 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
         Log.d(Constants.LOG_TAG.SERVICE, "on destroy");
         player.release();
         stopUpdating();
-        unregisterReceiver(powerReceiver);
+
+        if (powerReceiver != null) {
+            unregisterReceiver(powerReceiver);
+        }
+
         super.onDestroy();
     }
 

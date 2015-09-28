@@ -1,24 +1,21 @@
 package com.randomname.vlad.nasheradio;
 
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.IBinder;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.widget.Toast;
+import android.view.Menu;
+import android.view.MenuItem;
 
+import com.randomname.vlad.nasheradio.activitys.SettingsActivity;
 import com.randomname.vlad.nasheradio.fragments.MainFragment;
 import com.randomname.vlad.nasheradio.services.MusicService;
 import com.randomname.vlad.nasheradio.util.Constants;
-
-import java.lang.reflect.Array;
 
 public class MainActivity extends AppCompatActivity implements MainFragment.MainFragmentCallbacks {
 
@@ -35,8 +32,9 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Main
         setContentView(R.layout.activity_main);
 
         toolbar = (Toolbar)findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.nashe_label);
+
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(R.string.nashe_label);
 
         initSharedPreferences();
 
@@ -72,6 +70,24 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Main
         }
 
         mService.isAttached = false;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                break;
+        }
+        return false;
     }
 
     @Override

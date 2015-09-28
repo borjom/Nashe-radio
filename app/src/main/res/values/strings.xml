@@ -6,4 +6,7 @@
     <string name="album_art_cover">Album art cover</string>
     <string name="low_quality">Low quality</string>
     <string name="high_quality">High quality</string>
+    <string name="title_activity_preferences">PreferencesActivity</string>
+
+    <string name="hello_world">Hello world!</string>
 </resources>

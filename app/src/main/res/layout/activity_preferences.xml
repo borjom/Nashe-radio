@@ -1,8 +1,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.randomname.vlad.nasheradio.activitys.SettingsActivity">
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_height="wrap_content"
@@ -13,15 +14,10 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/fragment_container"
+    >
 
-        <fragment
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:name="com.randomname.vlad.nasheradio.fragments.MainFragment"
-            android:id="@+id/music_fragment"
-            android:layout_gravity="center"
-            class="com.randomname.vlad.nasheradio.fragments.MainFragment"
-            android:tag="music_fragment_tag" />
     </FrameLayout>
+
 </LinearLayout>

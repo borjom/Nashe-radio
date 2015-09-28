@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Nashe-radio.iml" filepath="$PROJECT_DIR$/Nashe-radio.iml" />
+      <module fileurl="file://$PROJECT_DIR$/NasheRadio.iml" filepath="$PROJECT_DIR$/NasheRadio.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
