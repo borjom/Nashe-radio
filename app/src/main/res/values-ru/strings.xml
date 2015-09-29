@@ -7,4 +7,12 @@
     <string name="backgound_image">Фоновое изображение</string>
     <string name="high_quality">Высокое качество</string>
     <string name="low_quality">Низкое качество</string>
+    <string name="pref_AlbumArtQuality">Качество картинок</string>
+    <string name="pref_AlbumArtQualityTitle">Выберите качество картинок</string>
+    <string name="title_activity_preferences">Настройки</string>
+    <string name="pref_albumArtQuality_high">Высокое</string>
+    <string name="pref_albumArtQuality_low">Низкое</string>
+    <string name="pref_albumArtQuality_middle">Среднее</string>
+    <string name="pref_albumArtQuality_none">Не загружать</string>
+    <string name="pref_albumArtQuality_ultra_high">Ультра высокое</string>
 </resources>

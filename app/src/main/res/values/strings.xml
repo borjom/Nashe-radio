@@ -9,4 +9,12 @@
     <string name="title_activity_preferences">PreferencesActivity</string>
 
     <string name="hello_world">Hello world!</string>
+    <string name="pref_AlbumArtQuality">Album artwork quality</string>
+    <string name="pref_AlbumArtQualityTitle">Choose album artwork quality</string>
+
+    <string name="pref_albumArtQuality_none">Do not load</string>
+    <string name="pref_albumArtQuality_low">Low</string>
+    <string name="pref_albumArtQuality_middle">Middle</string>
+    <string name="pref_albumArtQuality_high">High</string>
+    <string name="pref_albumArtQuality_ultra_high">Ultra high</string>
 </resources>

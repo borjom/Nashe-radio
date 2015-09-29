@@ -4,4 +4,21 @@
         <item>http://nashe.streamr.ru/nashe-128.mp3</item>
         <item>http://nashe.streamr.ru/nashe-64.mp3</item>
     </string-array>
+
+    <string-array name="pref_AlbumArtQuality_entries">
+        <item>@string/pref_albumArtQuality_none</item>
+        <item>@string/pref_albumArtQuality_low</item>
+        <item>@string/pref_albumArtQuality_middle</item>
+        <item>@string/pref_albumArtQuality_high</item>
+        <item>@string/pref_albumArtQuality_ultra_high</item>
+    </string-array>
+
+    <string-array name="pref_AlbumArtQuality_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
 </resources>
