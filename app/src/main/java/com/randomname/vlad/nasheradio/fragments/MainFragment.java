@@ -17,13 +17,16 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.ViewPager;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 import com.kyleduo.switchbutton.SwitchButton;
 import com.melnykov.fab.FloatingActionButton;
@@ -45,7 +48,7 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class MainFragment extends Fragment {
+public class MainFragment extends Fragment implements ViewSwitcher.ViewFactory {
 
     RestAdapter restAdapter;
     NasheApi nasheApi;
@@ -53,8 +56,8 @@ public class MainFragment extends Fragment {
     StationsAdapter stationAdapter;
 
     @Bind(R.id.btn_play) FloatingActionButton playStopBtn;
-    @Bind(R.id.text_song_name) TextView textSong;
-    @Bind(R.id.text_song_author) TextView textArtist;
+    @Bind(R.id.text_song_name) TextSwitcher textSong;
+    @Bind(R.id.text_song_author) TextSwitcher textArtist;
     @Bind(R.id.text_bitrate_status) TextView bitrateStatus;
     @Bind(R.id.switch_quality) SwitchButton switchButton;
     @Bind(R.id.progress_bar) SmoothProgressBar progressBar;
@@ -109,6 +112,14 @@ public class MainFragment extends Fragment {
             bitrateStatus.setText(R.string.low_quality);
         }
 
+        textSong.setFactory(MainFragment.this);
+        textSong.setInAnimation(getActivity(), R.anim.fade_in);
+        textSong.setOutAnimation(getActivity(), R.anim.fade_out);
+
+        textArtist.setFactory(MainFragment.this);
+        textArtist.setInAnimation(getActivity(), R.anim.fade_in);
+        textArtist.setOutAnimation(getActivity(), R.anim.fade_out);
+
         return view;
     }
 
@@ -147,6 +158,13 @@ public class MainFragment extends Fragment {
     @OnClick (R.id.btn_play)
     public void playStopBtnClick() {
         mainFragmentCallbacks.onPlayStopBtnClick();
+    }
+
+    @Override
+    public View makeView() {
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        TextView textView = (TextView) inflater.inflate(R.layout.text_switcher_view, null);
+        return textView;
     }
 
     public interface MainFragmentCallbacks {
@@ -249,6 +267,8 @@ public class MainFragment extends Fragment {
         StationFragment currentFragment = (StationFragment) stationAdapter.instantiateItem(stationsPager, stationsPager.getCurrentItem());
 
         currentFragment.setNewCover(nasheModel.getArt());
+
+
 
         textArtist.setText(nasheModel.getArtist());
         textSong.setText(nasheModel.getSong());

@@ -49,39 +49,22 @@
                 android:visibility="invisible"
             />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <TextSwitcher
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:id="@+id/text_song_name"
-                android:textColor="@color/text_color"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_gravity="center_horizontal"
-                android:textStyle="bold"
-                android:singleLine="true"
-                android:ellipsize="marquee"
-                android:marqueeRepeatLimit ="marquee_forever"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:scrollHorizontally="true"
-
             />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <TextSwitcher
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:id="@+id/text_song_author"
-                android:textColor="@color/text_color"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
                 android:layout_gravity="center_horizontal"
-                android:textStyle="bold"
-                android:singleLine="true"
-                android:ellipsize="marquee"
-                android:marqueeRepeatLimit ="marquee_forever"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:scrollHorizontally="true"
             />
 
             <RelativeLayout
