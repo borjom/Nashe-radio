@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Main
         startService(startIntent);
 
         musicFragment = (MainFragment) getSupportFragmentManager().findFragmentById(R.id.music_fragment);
+
     }
 
     @Override

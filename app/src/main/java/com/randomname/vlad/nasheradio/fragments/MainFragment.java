@@ -99,6 +99,7 @@ public class MainFragment extends Fragment implements ViewSwitcher.ViewFactory {
                 Constants.SHARED_PREFERENCES.PREF_NAME, Context.MODE_PRIVATE);
         stationAdapter = new StationsAdapter(getChildFragmentManager());
         stationsPager.setAdapter(stationAdapter);
+        stationsPager.setOffscreenPageLimit(1);
 
         Boolean status = prefs.getBoolean(Constants.SHARED_PREFERENCES.QUALITY_STATUS, true);
         switchButton.setChecked(status);
@@ -267,8 +268,6 @@ public class MainFragment extends Fragment implements ViewSwitcher.ViewFactory {
         StationFragment currentFragment = (StationFragment) stationAdapter.instantiateItem(stationsPager, stationsPager.getCurrentItem());
 
         currentFragment.setNewCover(nasheModel.getArt());
-
-
 
         textArtist.setText(nasheModel.getArtist());
         textSong.setText(nasheModel.getSong());

@@ -22,6 +22,7 @@
             android:id="@+id/music_fragment"
             android:layout_gravity="center"
             class="com.randomname.vlad.nasheradio.fragments.MainFragment"
-            android:tag="music_fragment_tag" />
+            android:tag="music_fragment_tag"
+            tools:layout="@layout/main_fragment" />
     </FrameLayout>
 </LinearLayout>

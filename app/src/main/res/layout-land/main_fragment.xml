@@ -5,7 +5,7 @@
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
->
+    >
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -14,16 +14,31 @@
         android:scaleType="centerCrop"
         android:contentDescription="@string/backgound_image" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         >
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_height="match_parent"
+        >
+
+            <TextSwitcher
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_song_name"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp" />
+
+            <TextSwitcher
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_song_author"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_gravity="center_horizontal"
+                />
 
             <android.support.v4.view.ViewPager
 
@@ -38,7 +53,10 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
 
             <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
                 android:id="@+id/progress_bar"
@@ -47,30 +65,12 @@
                 style="@style/GradientProgressBar"
                 android:indeterminate="true"
                 android:visibility="invisible"
-            />
-
-            <TextSwitcher
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/text_song_name"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_gravity="center_horizontal"
-            />
-
-            <TextSwitcher
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/text_song_author"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_gravity="center_horizontal"
-            />
+                />
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-            >
+                >
                 <com.kyleduo.switchbutton.SwitchButton
                     android:id="@+id/switch_quality"
                     style="@style/MaterialDesignStyle"
@@ -80,8 +80,7 @@
                     app:thumbDrawable="@drawable/md_thumb"
                     android:layout_centerVertical="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                />
+                    android:layout_alignParentStart="true" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -90,9 +89,7 @@
                     android:layout_alignBottom="@+id/btn_play"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginBottom="12dp"
-                 />
+                    android:layout_marginLeft="16dp" />
 
                 <com.melnykov.fab.FloatingActionButton
                     android:id="@+id/btn_play"
@@ -107,6 +104,6 @@
                     android:layout_alignParentEnd="true" />
             </RelativeLayout>
         </LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
 
 </RelativeLayout>

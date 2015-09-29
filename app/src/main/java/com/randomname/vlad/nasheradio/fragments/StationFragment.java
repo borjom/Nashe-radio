@@ -36,7 +36,6 @@ public class StationFragment extends Fragment {
         View v = inflater.inflate(R.layout.station_fragment, container, false);
 
         ButterKnife.bind(this, v);
-
         return v;
 
     }
@@ -62,8 +61,14 @@ public class StationFragment extends Fragment {
     }
 
     private String setNewQualitySource(String source) {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        int qualityPrefs =Integer.parseInt(sharedPref.getString("pref_AlbumArtQuality", "4"));
+        int qualityPrefs;
+        try {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            qualityPrefs = Integer.parseInt(sharedPref.getString("pref_AlbumArtQuality", "4"));
+        } catch (Exception e) {
+            qualityPrefs = 4;
+        }
+
         String qualityLevel;
 
         String[] qualityArray = {
