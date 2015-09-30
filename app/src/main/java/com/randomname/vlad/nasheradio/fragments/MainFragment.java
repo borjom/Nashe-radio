@@ -133,6 +133,14 @@ public class MainFragment extends Fragment implements ViewSwitcher.ViewFactory {
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mNewStatusReceiver,
                 new IntentFilter(Constants.BROADCAST_ACTION.NEW_STATUS_EVENT));
 
+        if (mainFragmentCallbacks.getPreparationState()) {
+            progressBar.progressiveStart();
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.progressiveStop();
+            progressBar.setVisibility(View.INVISIBLE);
+        }
+
         String path = Constants.API.STATIONS[stationsPager.getCurrentItem()];
 
         nasheApi.getCurrentSong(path, new Callback<NasheModel>() {
@@ -171,6 +179,7 @@ public class MainFragment extends Fragment implements ViewSwitcher.ViewFactory {
     public interface MainFragmentCallbacks {
         public void onPlayStopBtnClick();
         public void onStationChanged();
+        public Boolean getPreparationState();
     }
 
     @OnCheckedChanged (R.id.switch_quality)
@@ -231,7 +240,7 @@ public class MainFragment extends Fragment implements ViewSwitcher.ViewFactory {
             if (intent.getStringExtra(Constants.BROADCAST_ACTION.MESSAGE).equals(Constants.BROADCAST_ACTION.START_MUSIC)) {
                 playStopBtn.setImageDrawable(ContextCompat.getDrawable(getActivity(), android.R.drawable.ic_media_pause));
                 progressBar.progressiveStop();
-		progressBar.setVisibility(View.INVISIBLE);
+		        progressBar.setVisibility(View.INVISIBLE);
             } else if(intent.getStringExtra(Constants.BROADCAST_ACTION.MESSAGE).equals(Constants.BROADCAST_ACTION.STOP_MUSIC)) {
                 playStopBtn.setImageDrawable(ContextCompat.getDrawable(getActivity(), android.R.drawable.ic_media_play));
             }
