@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -31,6 +32,7 @@ import android.widget.ViewSwitcher;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.melnykov.fab.FloatingActionButton;
 import com.randomname.vlad.nasheradio.R;
+import com.randomname.vlad.nasheradio.adapters.CancelableViewPager;
 import com.randomname.vlad.nasheradio.adapters.StationsAdapter;
 import com.randomname.vlad.nasheradio.api.NasheApi;
 import com.randomname.vlad.nasheradio.models.NasheModel;
@@ -50,6 +52,8 @@ import retrofit.client.Response;
 
 public class MainFragment extends Fragment implements ViewSwitcher.ViewFactory {
 
+    long startTime = System.currentTimeMillis();
+
     RestAdapter restAdapter;
     NasheApi nasheApi;
 
@@ -61,7 +65,7 @@ public class MainFragment extends Fragment implements ViewSwitcher.ViewFactory {
     @Bind(R.id.text_bitrate_status) TextView bitrateStatus;
     @Bind(R.id.switch_quality) SwitchButton switchButton;
     @Bind(R.id.progress_bar) SmoothProgressBar progressBar;
-    @Bind(R.id.pager_stations) ViewPager stationsPager;
+    @Bind(R.id.pager_stations) CancelableViewPager stationsPager;
 
     MainFragmentCallbacks mainFragmentCallbacks;
 
@@ -204,6 +208,18 @@ public class MainFragment extends Fragment implements ViewSwitcher.ViewFactory {
 
     @OnPageChange (R.id.pager_stations)
     public void stationChangedListener() {
+
+        if (stationsPager.getPagingEnabled()) {
+            new android.os.Handler().postDelayed(
+                    new Runnable() {
+                        public void run() {
+                            stationsPager.setPagingEnabled(true);
+                        }
+                    },
+                    500);
+        }
+
+        stationsPager.setPagingEnabled(false);
 
         SharedPreferences prefs = getActivity().getSharedPreferences(
                 Constants.SHARED_PREFERENCES.PREF_NAME, Context.MODE_PRIVATE);

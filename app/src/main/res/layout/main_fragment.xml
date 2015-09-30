@@ -25,7 +25,7 @@
             android:layout_height="0dp"
             android:layout_weight="1">
 
-            <android.support.v4.view.ViewPager
+            <com.randomname.vlad.nasheradio.adapters.CancelableViewPager
 
                 android:id="@+id/pager_stations"
 

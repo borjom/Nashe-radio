@@ -24,6 +24,15 @@
             android:layout_height="match_parent"
         >
 
+            <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/GradientProgressBar"
+                android:indeterminate="true"
+                android:visibility="invisible"
+                />
+
             <TextSwitcher
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -40,7 +49,7 @@
                 android:layout_gravity="center_horizontal"
                 />
 
-            <android.support.v4.view.ViewPager
+            <com.randomname.vlad.nasheradio.adapters.CancelableViewPager
 
                 android:id="@+id/pager_stations"
 
@@ -57,15 +66,6 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true">
-
-            <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
-                android:id="@+id/progress_bar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/GradientProgressBar"
-                android:indeterminate="true"
-                android:visibility="invisible"
-                />
 
             <RelativeLayout
                 android:layout_width="match_parent"
