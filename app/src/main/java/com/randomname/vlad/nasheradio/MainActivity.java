@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Main
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (!mService.getIsPlaying() || !mService.getIsPrepared()) {
+        if (!mService.getIsPlaying() && !mService.getIsPrepared()) {
             Intent stopIntent = new Intent(MainActivity.this, MusicService.class);
             stopService(stopIntent);
         }
@@ -102,14 +103,15 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Main
     @Override
     public void onStationChanged() {
         if (mBound) {
+            Log.e("MusicService", "restart");
             mService.restartPlayer();
         }
     }
 
     @Override
     public Boolean getPreparationState() {
-        if (mBound) {
-            return mService.getIsPrepared();
+        if (MusicService.inPreparedState != null) {
+            return MusicService.inPreparedState;
         }
         return false;
     }

@@ -53,7 +53,7 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
 
     private Boolean isPlaying = false;
     private Boolean audioFocusGranted = false;
-    private Boolean inPreparedState = false;
+    public static Boolean inPreparedState;
     private Boolean isInForeground = false;
     private Boolean restartAfterPreparation = false;
 
@@ -65,6 +65,12 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
     @Override
     public void onCreate() {
         super.onCreate();
+
+        if (inPreparedState == null) {
+            Log.e(Constants.LOG_TAG.SERVICE, String.valueOf(inPreparedState));
+            inPreparedState = false;
+        }
+
         Log.d(Constants.LOG_TAG.SERVICE, "On create");
         audioManager = (AudioManager) getSystemService(getApplicationContext().AUDIO_SERVICE);
         initMusicPlayer();
@@ -226,10 +232,11 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
         if (restartAfterPreparation) {
             restartAfterPreparation = false;
             stopPlaying();
+            Log.d("KAK", "STOP");
             startPlaying();
+            Log.d("KAK", "START");
+            return;
         }
-
-        getCurrentSong();
 
         if (!isInForeground) {
             startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE,
@@ -239,6 +246,8 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
         Intent intent = new Intent(Constants.BROADCAST_ACTION.MUSIC_EVENT);
         intent.putExtra(Constants.BROADCAST_ACTION.MESSAGE, Constants.BROADCAST_ACTION.START_MUSIC);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
+        getCurrentSong();
     }
 
     @Override
@@ -346,8 +355,10 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
 
     public void stopPlaying() {
         isPlaying = false;
-        wifiLock.release();
-        wifiLock = null;
+        if (wifiLock != null) {
+            wifiLock.release();
+            wifiLock = null;
+        }
         audioManager.abandonAudioFocus(this);
         audioFocusGranted = false;
         player.stop();
@@ -367,6 +378,9 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
     }
 
     public void restartPlayer() {
+
+        Log.e("KAKAZOPA", String.valueOf(isPlaying) + " " + String.valueOf(inPreparedState));
+
         if (isPlaying && !inPreparedState) {
             stopPlaying();
             startPlaying();

@@ -137,6 +137,8 @@ public class MainFragment extends Fragment implements ViewSwitcher.ViewFactory {
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mNewStatusReceiver,
                 new IntentFilter(Constants.BROADCAST_ACTION.NEW_STATUS_EVENT));
 
+        Log.e("MusicSer", String.valueOf(mainFragmentCallbacks.getPreparationState()));
+
         if (mainFragmentCallbacks.getPreparationState()) {
             progressBar.progressiveStart();
             progressBar.setVisibility(View.VISIBLE);
