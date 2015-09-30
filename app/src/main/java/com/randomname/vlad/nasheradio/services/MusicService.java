@@ -88,7 +88,7 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
 
         if (powerReceiver == null) {
-            new BroadcastReceiver() {
+            powerReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
@@ -151,7 +151,7 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
             @Override
             public void success(NasheModel nasheModel, Response response) {
                 if (response.getStatus() == 200) {
-                    if (isPlaying) {
+                    if (isPlaying || isInForeground) {
                         updateNotification(nasheModel);
                     }
                     if (isAttached) {
@@ -232,9 +232,7 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
         if (restartAfterPreparation) {
             restartAfterPreparation = false;
             stopPlaying();
-            Log.d("KAK", "STOP");
             startPlaying();
-            Log.d("KAK", "START");
             return;
         }
 
@@ -378,9 +376,6 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
     }
 
     public void restartPlayer() {
-
-        Log.e("KAKAZOPA", String.valueOf(isPlaying) + " " + String.valueOf(inPreparedState));
-
         if (isPlaying && !inPreparedState) {
             stopPlaying();
             startPlaying();

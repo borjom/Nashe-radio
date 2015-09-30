@@ -103,7 +103,6 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Main
     @Override
     public void onStationChanged() {
         if (mBound) {
-            Log.e("MusicService", "restart");
             mService.restartPlayer();
         }
     }
