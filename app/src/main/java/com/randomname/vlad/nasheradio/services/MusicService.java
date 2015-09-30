@@ -380,6 +380,9 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
     public Boolean getIsPlaying() {
         return isPlaying;
     }
+    public Boolean getIsPrepared() {
+        return inPreparedState;
+    }
 
     public void toggleNotificationPausePlay() {
         if (isPlaying) {

@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Main
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (!mService.getIsPlaying()) {
+        if (!mService.getIsPlaying() || !mService.getIsPrepared()) {
             Intent stopIntent = new Intent(MainActivity.this, MusicService.class);
             stopService(stopIntent);
         }
@@ -104,6 +104,14 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Main
         if (mBound) {
             mService.restartPlayer();
         }
+    }
+
+    @Override
+    public Boolean getPreparationState() {
+        if (mBound) {
+            return mService.getIsPrepared();
+        }
+        return false;
     }
 
     private ServiceConnection mConnection = new ServiceConnection() {
