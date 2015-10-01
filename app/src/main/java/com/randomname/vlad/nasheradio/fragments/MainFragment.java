@@ -39,6 +39,8 @@ import com.randomname.vlad.nasheradio.models.NasheModel;
 import com.randomname.vlad.nasheradio.util.Constants;
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
@@ -52,7 +54,8 @@ import retrofit.client.Response;
 
 public class MainFragment extends Fragment implements ViewSwitcher.ViewFactory {
 
-    long startTime = System.currentTimeMillis();
+    final String SONG_KEY = "song";
+    final String ARTIST_KEY = "artist";
 
     RestAdapter restAdapter;
     NasheApi nasheApi;
@@ -95,6 +98,17 @@ public class MainFragment extends Fragment implements ViewSwitcher.ViewFactory {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        TextView songText = (TextView) textSong.getCurrentView();
+        TextView artText = (TextView) textArtist.getCurrentView();
+
+        outState.putString(SONG_KEY, String.valueOf(songText.getText()));
+        outState.putString(ARTIST_KEY, String.valueOf(artText.getText()));
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.main_fragment, container, false);
         ButterKnife.bind(this, view);
@@ -124,6 +138,11 @@ public class MainFragment extends Fragment implements ViewSwitcher.ViewFactory {
         textArtist.setFactory(MainFragment.this);
         textArtist.setInAnimation(getActivity(), R.anim.fade_in);
         textArtist.setOutAnimation(getActivity(), R.anim.fade_out);
+
+        if (savedInstanceState != null) {
+            textSong.setText(savedInstanceState.getString(SONG_KEY));
+            textArtist.setText(savedInstanceState.getString(ARTIST_KEY));
+        }
 
         return view;
     }
