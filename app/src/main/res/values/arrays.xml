@@ -5,6 +5,11 @@
         <item>http://nashe.streamr.ru/nashe-64.mp3</item>
     </string-array>
 
+    <string-array name="stations_names">
+        <item>@string/nashe_label</item>
+        <item>@string/nashe20_label</item>
+    </string-array>
+
     <string-array name="pref_AlbumArtQuality_entries">
         <item>@string/pref_albumArtQuality_none</item>
         <item>@string/pref_albumArtQuality_low</item>

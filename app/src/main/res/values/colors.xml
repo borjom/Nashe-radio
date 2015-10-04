@@ -13,11 +13,13 @@
         <item>@color/gplus_color_2</item>
         <item>@color/gplus_color_3</item>
         <item>@color/gplus_color_4</item>
+        <item>@color/gplus_color_3</item>
+        <item>@color/gplus_color_2</item>
     </integer-array>
 
-    <color name="gplus_color_1">#3e802f</color>
-    <color name="gplus_color_2">#f4b400</color>
-    <color name="gplus_color_3">#427fed</color>
-    <color name="gplus_color_4">#b23424</color>
+    <color name="gplus_color_1">#EF5350</color>
+    <color name="gplus_color_2">#F44336</color>
+    <color name="gplus_color_3">#E53935</color>
+    <color name="gplus_color_4">#D32F2F</color>
 
 </resources>

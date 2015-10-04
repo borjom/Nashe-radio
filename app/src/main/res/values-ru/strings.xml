@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">Наше радио</string>
     <string name="nashe_label">НАШЕ Радио</string>
+    <string name="nashe20_label">НАШЕ Радио 2.0</string>
     <string name="action_settings">Настройки</string>
     <string name="album_art_cover">Обложка альбома</string>
     <string name="backgound_image">Фоновое изображение</string>
@@ -15,4 +16,6 @@
     <string name="pref_albumArtQuality_middle">Среднее</string>
     <string name="pref_albumArtQuality_none">Не загружать</string>
     <string name="pref_albumArtQuality_ultra_high">Ультра высокое</string>
+    <string name="stop_player_on_exit">Останавливать проигрыватель при выходе</string>
+    <string name="stop_player_on_exit_title">Кнопка назад</string>
 </resources>

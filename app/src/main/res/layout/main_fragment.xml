@@ -91,7 +91,6 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_marginLeft="16dp"
-                    android:layout_marginBottom="12dp"
                  />
 
                 <com.melnykov.fab.FloatingActionButton

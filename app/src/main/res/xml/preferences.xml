@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <ListPreference
         android:key="pref_AlbumArtQuality"
         android:title="@string/pref_AlbumArtQuality"
         android:dialogTitle="@string/pref_AlbumArtQualityTitle"
+        android:summary=""
         android:entries="@array/pref_AlbumArtQuality_entries"
         android:entryValues="@array/pref_AlbumArtQuality_values"
         android:defaultValue="3" />
+
+    <CheckBoxPreference
+        android:key="pref_exitOnBack"
+        android:defaultValue="false"
+        app:title="@string/stop_player_on_exit_title"
+        android:summary="@string/stop_player_on_exit"
+    />
 
 </PreferenceScreen>

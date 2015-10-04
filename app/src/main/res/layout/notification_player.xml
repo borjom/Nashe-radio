@@ -32,6 +32,7 @@
         android:layout_alignBottom="@+id/album_art"
         android:layout_toRightOf="@+id/album_art"
         android:layout_toEndOf="@+id/album_art"
+        android:layout_toLeftOf="@+id/close_notification"
         android:gravity="center"
         android:layout_alignParentTop="true">
 

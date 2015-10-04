@@ -8,10 +8,13 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.randomname.vlad.nasheradio.activitys.SettingsActivity;
 import com.randomname.vlad.nasheradio.fragments.MainFragment;
@@ -25,6 +28,8 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Main
     MusicService mService;
     boolean mBound = false;
 
+    SharedPreferences prefs;
+
     MainFragment musicFragment;
 
     @Override
@@ -33,9 +38,10 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Main
         setContentView(R.layout.activity_main);
 
         toolbar = (Toolbar)findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.nashe_label);
 
         setSupportActionBar(toolbar);
+
+        changeTitle();
 
         initSharedPreferences();
 
@@ -104,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Main
     public void onStationChanged() {
         if (mBound) {
             mService.restartPlayer();
+            changeTitle();
         }
     }
 
@@ -137,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Main
     };
 
     public void initSharedPreferences() {
-        SharedPreferences prefs = this.getSharedPreferences(
+        prefs = this.getSharedPreferences(
                 Constants.SHARED_PREFERENCES.PREF_NAME, Context.MODE_PRIVATE);
 
         if (!prefs.contains(Constants.SHARED_PREFERENCES.CURRENT_CHANNEL)) {
@@ -150,4 +157,39 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Main
         }
     }
 
+    public void changeTitle() {
+        SharedPreferences prefs = getSharedPreferences(
+                Constants.SHARED_PREFERENCES.PREF_NAME, Context.MODE_PRIVATE);
+
+        int currentStation = prefs.getInt(Constants.SHARED_PREFERENCES.CURRENT_STATION, 0);
+
+        String[] stationsArray = getResources().getStringArray(R.array.stations_names);
+
+        String newTitle = stationsArray[currentStation];
+        try {
+            getSupportActionBar().setTitle(newTitle);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK && isTaskRoot()) {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+
+            Boolean stopOnBack = sharedPref.getBoolean("pref_exitOnBack", false);
+
+            if (stopOnBack) {
+                if (mBound) {
+                    mService.stopPlaying();
+                }
+            }
+
+            return super.onKeyDown(keyCode, event);
+        }
+        else {
+            return super.onKeyDown(keyCode, event);
+        }
+    }
 }
