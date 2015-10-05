@@ -20,4 +20,7 @@
     <string name="pref_albumArtQuality_ultra_high">Ultra high</string>
     <string name="stop_player_on_exit">Stop player on exit</string>
     <string name="stop_player_on_exit_title">Back button</string>
+    <string name="notification_icon_description">nashe radio notification icon</string>
+    <string name="close_icon_description">close icon</string>
+    <string name="notification_play_icon">notification play icon</string>
 </resources>

@@ -20,7 +20,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import com.randomname.vlad.nasheradio.MainActivity;
 import com.randomname.vlad.nasheradio.R;
@@ -67,11 +66,9 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
         super.onCreate();
 
         if (inPreparedState == null) {
-            Log.e(Constants.LOG_TAG.SERVICE, String.valueOf(inPreparedState));
             inPreparedState = false;
         }
 
-        Log.d(Constants.LOG_TAG.SERVICE, "On create");
         audioManager = (AudioManager) getSystemService(getApplicationContext().AUDIO_SERVICE);
         initMusicPlayer();
         initNotification();
@@ -174,8 +171,6 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(Constants.LOG_TAG.SERVICE, "on start command");
-
         if (intent != null && intent.getAction() != null && intent.getAction().equals(Constants.ACTION.STOP_FOREGROUND_ACTION)) {
             stopPlaying();
             stopForeground(true);
@@ -194,13 +189,11 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
 
     @Override
     public boolean onUnbind(Intent intent) {
-        Log.d(Constants.LOG_TAG.SERVICE, "on unbind");
         return false;
     }
 
     @Override
     public void onDestroy() {
-        Log.d(Constants.LOG_TAG.SERVICE, "on destroy");
         player.release();
         stopUpdating();
 
@@ -263,7 +256,6 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
 
     public class LocalBinder extends Binder {
         public MusicService getService() {
-            Log.d(Constants.LOG_TAG.SERVICE, "return binder");
             // Return this instance of LocalService so clients can call public methods
             return MusicService.this;
         }

@@ -5,9 +5,6 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
-/**
- * Created by Vlad on 29.09.2015.
- */
 public class CancelableViewPager extends ViewPager {
 
     private boolean enabled;

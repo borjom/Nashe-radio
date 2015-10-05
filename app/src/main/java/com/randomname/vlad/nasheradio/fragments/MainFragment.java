@@ -7,26 +7,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.view.ViewPager;
-import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.kyleduo.switchbutton.SwitchButton;
@@ -37,9 +27,6 @@ import com.randomname.vlad.nasheradio.adapters.StationsAdapter;
 import com.randomname.vlad.nasheradio.api.NasheApi;
 import com.randomname.vlad.nasheradio.models.NasheModel;
 import com.randomname.vlad.nasheradio.util.Constants;
-import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -195,8 +182,7 @@ public class MainFragment extends Fragment implements ViewSwitcher.ViewFactory {
     @Override
     public View makeView() {
         LayoutInflater inflater = LayoutInflater.from(getActivity());
-        TextView textView = (TextView) inflater.inflate(R.layout.text_switcher_view, null);
-        return textView;
+        return (TextView) inflater.inflate(R.layout.text_switcher_view, null);
     }
 
     public interface MainFragmentCallbacks {

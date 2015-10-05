@@ -18,4 +18,7 @@
     <string name="pref_albumArtQuality_ultra_high">Ультра высокое</string>
     <string name="stop_player_on_exit">Останавливать проигрыватель при выходе</string>
     <string name="stop_player_on_exit_title">Кнопка назад</string>
+    <string name="close_icon_description">иконка закрыть</string>
+    <string name="notification_icon_description">иконка наше радио</string>
+    <string name="notification_play_icon">иконка играть</string>
 </resources>

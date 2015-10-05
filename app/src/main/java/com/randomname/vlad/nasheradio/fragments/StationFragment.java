@@ -2,18 +2,13 @@ package com.randomname.vlad.nasheradio.fragments;
 
 
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Switch;
-import android.widget.Toast;
 
 import com.randomname.vlad.nasheradio.R;
 import com.squareup.picasso.Picasso;
@@ -85,9 +80,7 @@ public class StationFragment extends Fragment {
             return "Default Picture";
         }
 
-        String output = source.replaceAll("1000x1000bb", qualityLevel);
-
-        return output;
+        return source.replaceAll("1000x1000bb", qualityLevel);
     }
 
 }
