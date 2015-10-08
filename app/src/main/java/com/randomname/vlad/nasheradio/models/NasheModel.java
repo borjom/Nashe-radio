@@ -9,6 +9,7 @@ public class NasheModel implements Parcelable {
     private String art;
 
     private String artist;
+    private String[] lastTracks;
 
     public NasheModel() {
     }
@@ -17,6 +18,7 @@ public class NasheModel implements Parcelable {
         song = in.readString();
         art = in.readString();
         artist = in.readString();
+        lastTracks = in.createStringArray();
     }
 
     public String getSong ()
@@ -49,6 +51,14 @@ public class NasheModel implements Parcelable {
         this.artist = artist;
     }
 
+    public String[] getLastTracks () {
+        return lastTracks;
+    }
+
+    public void setLastTracks(String[] lastTracks) {
+        this.lastTracks = lastTracks;
+    }
+
     @Override
     public String toString()
     {
@@ -65,6 +75,7 @@ public class NasheModel implements Parcelable {
         dest.writeString(song);
         dest.writeString(art);
         dest.writeString(artist);
+        dest.writeStringArray(lastTracks);
     }
 
     public static final Parcelable.Creator<NasheModel> CREATOR = new Parcelable.Creator<NasheModel>() {

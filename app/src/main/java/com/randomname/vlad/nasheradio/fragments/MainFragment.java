@@ -12,11 +12,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.kyleduo.switchbutton.SwitchButton;
@@ -26,6 +28,7 @@ import com.randomname.vlad.nasheradio.adapters.CancelableViewPager;
 import com.randomname.vlad.nasheradio.adapters.StationsAdapter;
 import com.randomname.vlad.nasheradio.api.NasheApi;
 import com.randomname.vlad.nasheradio.models.NasheModel;
+import com.randomname.vlad.nasheradio.services.MusicService;
 import com.randomname.vlad.nasheradio.util.Constants;
 
 import butterknife.Bind;
@@ -43,6 +46,8 @@ public class MainFragment extends Fragment implements ViewSwitcher.ViewFactory {
 
     final String SONG_KEY = "song";
     final String ARTIST_KEY = "artist";
+
+    private Boolean qualityInitializator = true;
 
     RestAdapter restAdapter;
     NasheApi nasheApi;
@@ -131,6 +136,8 @@ public class MainFragment extends Fragment implements ViewSwitcher.ViewFactory {
             textArtist.setText(savedInstanceState.getString(ARTIST_KEY));
         }
 
+        setIsPlaying(MusicService.getIsPlaying());
+
         return view;
     }
 
@@ -142,6 +149,7 @@ public class MainFragment extends Fragment implements ViewSwitcher.ViewFactory {
 
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mNewStatusReceiver,
                 new IntentFilter(Constants.BROADCAST_ACTION.NEW_STATUS_EVENT));
+
 
         if (mainFragmentCallbacks.getPreparationState()) {
             progressBar.progressiveStart();
@@ -217,6 +225,11 @@ public class MainFragment extends Fragment implements ViewSwitcher.ViewFactory {
         ).putBoolean(Constants.SHARED_PREFERENCES.QUALITY_STATUS,
                 qualityStatus).apply();
 
+        if (qualityInitializator) {
+            qualityInitializator = false;
+            return;
+        }
+
         mainFragmentCallbacks.onStationChanged();
     }
 
@@ -251,7 +264,6 @@ public class MainFragment extends Fragment implements ViewSwitcher.ViewFactory {
                 uri
         ).putInt(Constants.SHARED_PREFERENCES.CURRENT_STATION,
                 currentStation).apply();
-
         mainFragmentCallbacks.onStationChanged();
     }
 
@@ -280,7 +292,6 @@ public class MainFragment extends Fragment implements ViewSwitcher.ViewFactory {
         @Override
         public void onReceive(Context context, Intent intent) {
             NasheModel model = intent.getParcelableExtra(Constants.BROADCAST_ACTION.MESSAGE);
-
             updatePlayerInfo(model);
         }
     };

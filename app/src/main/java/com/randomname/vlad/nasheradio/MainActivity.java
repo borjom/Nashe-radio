@@ -7,28 +7,43 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.randomname.vlad.nasheradio.activitys.SettingsActivity;
+import com.randomname.vlad.nasheradio.fragments.LastSongsFragment;
 import com.randomname.vlad.nasheradio.fragments.MainFragment;
+import com.randomname.vlad.nasheradio.fragments.StationFragment;
 import com.randomname.vlad.nasheradio.services.MusicService;
 import com.randomname.vlad.nasheradio.util.Constants;
 
 public class MainActivity extends AppCompatActivity implements MainFragment.MainFragmentCallbacks {
 
+    final String DRAWLER_SELECTION = "drawlerSelection";
+    final String TITLE = "navigationTitle";
+
     Toolbar toolbar;
+    Drawer navDrawler;
 
     MusicService mService;
     boolean mBound = false;
 
     SharedPreferences prefs;
-
-    MainFragment musicFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,15 +54,32 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Main
 
         setSupportActionBar(toolbar);
 
-        changeTitle();
+        if (savedInstanceState != null) {
+            int position = savedInstanceState.getInt(DRAWLER_SELECTION);
+            String title = savedInstanceState.getString(TITLE);
+            getSupportActionBar().setTitle(title);
+            initDrawler(position);
+        } else {
+            changeTitle();
+            initDrawler(0);
+        }
 
         initSharedPreferences();
 
+        FragmentManager fm = getSupportFragmentManager();
+
+        if (fm.getFragments() == null) {
+            Fragment fragment = fm.findFragmentByTag("MainFragmentTag");
+            if (fragment == null) {
+                FragmentTransaction ft = fm.beginTransaction();
+                fragment = new MainFragment();
+                ft.replace(R.id.main_frame,fragment,"MainFragmentTag");
+                ft.commit();
+            }
+        }
+
         Intent startIntent = new Intent(MainActivity.this, MusicService.class);
         startService(startIntent);
-
-        musicFragment = (MainFragment) getSupportFragmentManager().findFragmentById(R.id.music_fragment);
-
     }
 
     @Override
@@ -76,6 +108,13 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Main
         }
 
         mService.isAttached = false;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(DRAWLER_SELECTION, navDrawler.getCurrentSelectedPosition());
+        outState.putString(TITLE, String.valueOf(getSupportActionBar().getTitle()));
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -129,9 +168,6 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Main
             MusicService.LocalBinder binder = (MusicService.LocalBinder) service;
             mService = binder.getService();
             mBound = true;
-
-            musicFragment.setIsPlaying(mService.getIsPlaying());
-
             mService.isAttached = true;
         }
 
@@ -140,6 +176,55 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Main
             mBound = false;
         }
     };
+
+    public void initDrawler(int selectedPosition) {
+            navDrawler = new DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(toolbar)
+                .addDrawerItems(
+                        new PrimaryDrawerItem().withName(R.string.drawler_player),
+                        new PrimaryDrawerItem().withName(R.string.drawler_last_songs)
+                )
+                .build();
+        navDrawler.setSelectionAtPosition(selectedPosition);
+        navDrawler.setOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+            @Override
+            public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+
+                FragmentManager fm = getSupportFragmentManager();
+                Fragment fragment;
+
+                switch (position) {
+                    case 0:
+                        fragment = fm.findFragmentByTag("MainFragmentTag");
+                        if (fragment == null) {
+                            FragmentTransaction ft = fm.beginTransaction();
+                            fragment = new MainFragment();
+                            ft.replace(R.id.main_frame,fragment,"MainFragmentTag");
+                            ft.commit();
+                            changeTitle();
+                            navDrawler.closeDrawer();
+                        }
+                        break;
+                    case 1:
+                        fragment = fm.findFragmentByTag("LastSongsTag");
+                        if (fragment == null) {
+                            FragmentTransaction ft = fm.beginTransaction();
+                            fragment = new LastSongsFragment();
+                            ft.replace(R.id.main_frame,fragment,"LastSongsTag");
+                            ft.commit();
+                            getSupportActionBar().setTitle(R.string.drawler_last_songs);
+                            navDrawler.closeDrawer();
+                        }
+                        break;
+                }
+                return true;
+            }
+        });
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        navDrawler.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
+    }
 
     public void initSharedPreferences() {
         prefs = this.getSharedPreferences(

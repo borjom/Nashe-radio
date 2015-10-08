@@ -23,4 +23,6 @@
     <string name="notification_icon_description">nashe radio notification icon</string>
     <string name="close_icon_description">close icon</string>
     <string name="notification_play_icon">notification play icon</string>
+    <string name="drawler_player">Player</string>
+    <string name="drawler_last_songs">Last songs</string>
 </resources>

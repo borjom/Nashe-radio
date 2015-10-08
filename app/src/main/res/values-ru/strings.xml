@@ -21,4 +21,6 @@
     <string name="close_icon_description">иконка закрыть</string>
     <string name="notification_icon_description">иконка наше радио</string>
     <string name="notification_play_icon">иконка играть</string>
+    <string name="drawler_last_songs">Последние песни</string>
+    <string name="drawler_player">Плеер</string>
 </resources>

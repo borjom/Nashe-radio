@@ -50,7 +50,7 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
 
     private Timer updateTimer;
 
-    private Boolean isPlaying = false;
+    private static Boolean isPlaying = false;
     private Boolean audioFocusGranted = false;
     public static Boolean inPreparedState;
     private Boolean isInForeground = false;
@@ -378,7 +378,7 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
         getCurrentSong();
     }
 
-    public Boolean getIsPlaying() {
+    public static Boolean getIsPlaying() {
         return isPlaying;
     }
     public Boolean getIsPrepared() {

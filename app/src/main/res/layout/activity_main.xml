@@ -12,17 +12,8 @@
     />
 
     <FrameLayout
+        android:id="@+id/main_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <fragment
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:name="com.randomname.vlad.nasheradio.fragments.MainFragment"
-            android:id="@+id/music_fragment"
-            android:layout_gravity="center"
-            class="com.randomname.vlad.nasheradio.fragments.MainFragment"
-            android:tag="music_fragment_tag"
-            tools:layout="@layout/main_fragment" />
     </FrameLayout>
 </LinearLayout>
