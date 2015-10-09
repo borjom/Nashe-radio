@@ -33,8 +33,9 @@ public class LastSongsAdapter extends RecyclerView.Adapter<LastSongsAdapter.Cust
     public void onBindViewHolder(CustomViewHolder customViewHolder, int i) {
         String song = lastSongsArray.get(i);
 
-
         customViewHolder.textView.setText(song);
+
+
     }
 
     @Override

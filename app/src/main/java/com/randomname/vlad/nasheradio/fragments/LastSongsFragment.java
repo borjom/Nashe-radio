@@ -1,26 +1,30 @@
 package com.randomname.vlad.nasheradio.fragments;
 
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
 
-import com.melnykov.fab.FloatingActionButton;
 import com.randomname.vlad.nasheradio.R;
 import com.randomname.vlad.nasheradio.adapters.LastSongsAdapter;
 import com.randomname.vlad.nasheradio.api.NasheApi;
 import com.randomname.vlad.nasheradio.models.NasheModel;
 import com.randomname.vlad.nasheradio.util.Constants;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,6 +37,9 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class LastSongsFragment extends Fragment {
+
+    final String SONGS_ARRAY_KEY = "lastSongsArrayList";
+    final String RECYCLER_STATE_KEY = "recyclerStateKey";
 
     RestAdapter restAdapter;
     NasheApi nasheApi;
@@ -63,9 +70,16 @@ public class LastSongsFragment extends Fragment {
         View view = inflater.inflate(R.layout.last_songs_fragment, container, false);
         ButterKnife.bind(this, view);
 
-        lastSongsArray = new ArrayList<>();
-
+        lastSongsRecycler.setItemAnimator(new DefaultItemAnimator());
         lastSongsRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        if (savedInstanceState == null) {
+            lastSongsArray = new ArrayList<>();
+        } else {
+            lastSongsArray = savedInstanceState.getStringArrayList(SONGS_ARRAY_KEY);
+            Parcelable recyclerState = savedInstanceState.getParcelable(RECYCLER_STATE_KEY);
+            lastSongsRecycler.getLayoutManager().onRestoreInstanceState(recyclerState);
+        }
 
         lastSongsAdapter = new LastSongsAdapter(getActivity(), lastSongsArray);
         lastSongsRecycler.setAdapter(lastSongsAdapter);
@@ -74,8 +88,21 @@ public class LastSongsFragment extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putStringArrayList(SONGS_ARRAY_KEY, lastSongsArray);
+
+        Parcelable mListState = lastSongsRecycler.getLayoutManager().onSaveInstanceState();
+        outState.putParcelable(RECYCLER_STATE_KEY, mListState);
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
+
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mNewStatusReceiver,
+                new IntentFilter(Constants.BROADCAST_ACTION.NEW_STATUS_EVENT));
 
         SharedPreferences prefs = getActivity().getSharedPreferences(
                 Constants.SHARED_PREFERENCES.PREF_NAME, Context.MODE_PRIVATE);
@@ -86,12 +113,7 @@ public class LastSongsFragment extends Fragment {
             @Override
             public void success(NasheModel nasheModel, Response response) {
                 if (response.getStatus() == 200) {
-                    String[] songs = nasheModel.getLastTracks();
-                    List<String> newArray = Arrays.asList(songs);
-
-                    lastSongsArray.clear();
-                    lastSongsArray.addAll(newArray);
-                    lastSongsAdapter.notifyDataSetChanged();
+                    updateList(nasheModel);
                 }
             }
 
@@ -99,5 +121,26 @@ public class LastSongsFragment extends Fragment {
             public void failure(RetrofitError error) {
             }
         });
+    }
+
+    private BroadcastReceiver mNewStatusReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            NasheModel model = intent.getParcelableExtra(Constants.BROADCAST_ACTION.MESSAGE);
+            updateList(model);
+        }
+    };
+
+    private void updateList(NasheModel nasheModel) {
+        String[] songs = nasheModel.getLastTracks();
+        List<String> newArray = Arrays.asList(songs);
+
+        if (lastSongsArray.equals(newArray)) {
+            return;
+        }
+
+        lastSongsArray.clear();
+        lastSongsArray.addAll(newArray);
+        lastSongsAdapter.notifyItemRangeChanged(0, newArray.size());
     }
 }
