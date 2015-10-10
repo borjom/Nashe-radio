@@ -1,4 +1,5 @@
 <resources>
+    <integer name="com_vk_sdk_AppId">5100380</integer>
     <string name="app_name">Nashe Radio</string>
     <string name="nashe_label">NASHE Radio</string>
     <string name="nashe20_label">NASHE Radio 2.0</string>
@@ -25,4 +26,6 @@
     <string name="notification_play_icon">notification play icon</string>
     <string name="drawler_player">Player</string>
     <string name="drawler_last_songs">Last songs</string>
+    <string name="drawer_nashe_news">Nashe news</string>
+    <string name="nashe_news_title">Nashe news</string>
 </resources>

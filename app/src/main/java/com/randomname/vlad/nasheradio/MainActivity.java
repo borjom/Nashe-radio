@@ -13,22 +13,19 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.randomname.vlad.nasheradio.activitys.SettingsActivity;
 import com.randomname.vlad.nasheradio.fragments.LastSongsFragment;
 import com.randomname.vlad.nasheradio.fragments.MainFragment;
-import com.randomname.vlad.nasheradio.fragments.StationFragment;
+import com.randomname.vlad.nasheradio.fragments.NewsFragment;
 import com.randomname.vlad.nasheradio.services.MusicService;
 import com.randomname.vlad.nasheradio.util.Constants;
 
@@ -183,7 +180,8 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Main
                 .withToolbar(toolbar)
                 .addDrawerItems(
                         new PrimaryDrawerItem().withName(R.string.drawler_player),
-                        new PrimaryDrawerItem().withName(R.string.drawler_last_songs)
+                        new PrimaryDrawerItem().withName(R.string.drawler_last_songs),
+                        new PrimaryDrawerItem().withName(R.string.drawer_nashe_news)
                 )
                 .build();
         navDrawler.setSelectionAtPosition(selectedPosition);
@@ -214,6 +212,17 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Main
                             ft.replace(R.id.main_frame,fragment,"LastSongsTag");
                             ft.commit();
                             getSupportActionBar().setTitle(R.string.drawler_last_songs);
+                            navDrawler.closeDrawer();
+                        }
+                        break;
+                    case 2:
+                        fragment = fm.findFragmentByTag("NasheNewsTag");
+                        if (fragment == null) {
+                            FragmentTransaction ft = fm.beginTransaction();
+                            fragment = new NewsFragment();
+                            ft.replace(R.id.main_frame,fragment,"NasheNewsTag");
+                            ft.commit();
+                            getSupportActionBar().setTitle(R.string.nashe_news_title);
                             navDrawler.closeDrawer();
                         }
                         break;
@@ -258,7 +267,10 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Main
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode == KeyEvent.KEYCODE_BACK && isTaskRoot()) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && navDrawler.isDrawerOpen()) {
+            navDrawler.closeDrawer();
+            return false;
+        } else if(keyCode == KeyEvent.KEYCODE_BACK && isTaskRoot()) {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
             Boolean stopOnBack = sharedPref.getBoolean("pref_exitOnBack", false);
