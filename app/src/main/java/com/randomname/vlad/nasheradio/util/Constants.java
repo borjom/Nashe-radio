@@ -42,12 +42,12 @@ public class Constants {
     public interface STATIONS {
         public static String[][] STATIONS = {
                 new String[] {
-                    "http://nashe.streamr.ru/nashe-64.mp3",
-                    "http://nashe.streamr.ru/nashe-128.mp3"
+                    "http://radio02-cn03.akadostream.ru:8112/nashe48.mp3",
+                    "http://81.19.85.200/nashe128.mp3"
                 },
                 new String[] {
-                        "http://nashe20.streamr.ru/nashe-64.mp3",
-                        "http://nashe20.streamr.ru/nashe-128.mp3"
+                        "http://nashe20.streamr.ru/nashe20-64.mp3",
+                        "http://nashe20.streamr.ru/nashe20-128.mp3"
                 }
         };
     }

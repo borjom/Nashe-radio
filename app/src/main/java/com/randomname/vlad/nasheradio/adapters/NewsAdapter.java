@@ -2,6 +2,9 @@ package com.randomname.vlad.nasheradio.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +20,7 @@ import com.vk.sdk.api.model.VKApiLink;
 import com.vk.sdk.api.model.VKApiPhoto;
 import com.vk.sdk.api.model.VKApiPost;
 import com.vk.sdk.api.model.VKAttachments;
+import com.vk.sdk.api.model.VKList;
 import com.vk.sdk.api.model.VKPostArray;
 
 import java.util.ArrayList;
@@ -47,6 +51,10 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.CustomViewHold
         String imageURL = "";
         String linkURL = "";
 
+        String repostText = "";
+        String repostImageURL = "";
+        String repostLinkURL = "";
+
         VKAttachments postAttachments = wallPost.attachments;
 
         if (!postAttachments.isEmpty()) {
@@ -73,13 +81,13 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.CustomViewHold
         if (!postText.isEmpty()) {
             customViewHolder.newsText.setText(StringUtils.removeURLFromString(postText));
         } else {
-            customViewHolder.newsText.setText("empty");
+            customViewHolder.newsText.setText("");
         }
 
         if (!linkURL.isEmpty()) {
-            customViewHolder.newsLink.setText(linkURL);
+            setClickableText(customViewHolder.newsLink, linkURL);
         } else {
-            customViewHolder.newsLink.setText("empty");
+            customViewHolder.newsLink.setText("");
         }
 
         if (!imageURL.isEmpty()) {
@@ -89,6 +97,68 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.CustomViewHold
                     .into(customViewHolder.newsImage);
         } else {
             customViewHolder.newsImage.setImageResource(android.R.color.transparent);
+        }
+
+        if (postText.isEmpty() && linkURL.isEmpty() && imageURL.isEmpty()) {
+            VKList<VKApiPost> copyHistory = wallPost.copy_history;
+
+
+            if (copyHistory.size() > 0) {
+
+                for (int y = 0; y < copyHistory.size(); y++) {
+                    VKApiPost repost = copyHistory.get(y);
+                    VKAttachments repostAttachments = repost.attachments;
+
+                    if (repostText.isEmpty()) {
+                        repostText = repost.text;
+                    }
+
+                    if (!repostAttachments.isEmpty()) {
+                        for (int ii = 0; ii < repostAttachments.size(); ii++) {
+                            VKAttachments.VKApiAttachment attachment = repostAttachments.get(ii);
+
+                            if (attachment.getType().equals("link")) {
+                                VKApiLink link = (VKApiLink) attachment;
+
+                                if (repostLinkURL.isEmpty()) {
+                                    repostLinkURL = link.url;
+                                }
+
+                                if (repostImageURL.isEmpty()) {
+                                    repostImageURL = link.image_src;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (!repostText.isEmpty()) {
+                customViewHolder.newsText.setText(StringUtils.removeURLFromString(repostText));
+            } else {
+                customViewHolder.newsText.setText("");
+            }
+
+            if (!repostLinkURL.isEmpty()) {
+                setClickableText(customViewHolder.newsLink, repostLinkURL);
+            } else {
+                customViewHolder.newsLink.setText("");
+            }
+
+            if (!repostImageURL.isEmpty()) {
+                Picasso.with(mContext)
+                        .load(repostImageURL)
+                        .noPlaceholder()
+                        .into(customViewHolder.newsImage);
+            } else {
+                customViewHolder.newsImage.setImageResource(android.R.color.transparent);
+            }
+        }
+
+        if (linkURL.isEmpty() && repostLinkURL.isEmpty()) {
+            String vkPostUrl = "https://vk.com/nashe?w=wall" + wallPost.from_id + "_" + wallPost.getId();
+
+            setClickableText(customViewHolder.newsLink, vkPostUrl);
         }
     }
 
@@ -108,5 +178,11 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.CustomViewHold
             this.newsLink = (TextView) view.findViewById(R.id.news_link_text);
             this.newsImage = (ImageView) view.findViewById(R.id.news_image);
         }
+    }
+
+    private void setClickableText(TextView view, String link) {
+        view.setText(Html.fromHtml("<a href=\"" + link + "\">" + link + "</a>"));
+        view.setClickable(true);
+        view.setMovementMethod (LinkMovementMethod.getInstance());
     }
 }

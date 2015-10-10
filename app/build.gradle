@@ -34,4 +34,6 @@ dependencies {
     compile('com.mikepenz:materialdrawer:4.3.4@aar') {
         transitive = true
     }
+    compile 'com.vk:androidsdk:+'
+    compile 'com.android.support:cardview-v7:23.0.1'
 }

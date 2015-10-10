@@ -48,6 +48,7 @@ public class MainFragment extends Fragment implements ViewSwitcher.ViewFactory {
     final String ARTIST_KEY = "artist";
 
     private Boolean qualityInitializator = true;
+    private Boolean stationInitializator = true;
 
     RestAdapter restAdapter;
     NasheApi nasheApi;
@@ -122,6 +123,9 @@ public class MainFragment extends Fragment implements ViewSwitcher.ViewFactory {
         } else {
             bitrateStatus.setText(R.string.low_quality);
         }
+
+        stationInitializator = false;
+        qualityInitializator = false;
 
         textSong.setFactory(MainFragment.this);
         textSong.setInAnimation(getActivity(), R.anim.fade_in);
@@ -264,6 +268,12 @@ public class MainFragment extends Fragment implements ViewSwitcher.ViewFactory {
                 uri
         ).putInt(Constants.SHARED_PREFERENCES.CURRENT_STATION,
                 currentStation).apply();
+
+        if (stationInitializator) {
+            stationInitializator = false;
+            return;
+        }
+
         mainFragmentCallbacks.onStationChanged();
     }
 

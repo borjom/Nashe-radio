@@ -4,9 +4,9 @@ public class StringUtils {
 
     public static String removeURLFromString(String input) {
 
-        String regex = "((https?|ftp)://|(www|ftp)\\.)?[a-z0-9-]+(\\.[a-z0-9-]+)+([/?].*)?$";
+        String urlRegex = "((https?|ftp)://|(www|ftp)\\.)?[a-z0-9-]+(\\.[a-z0-9-]+)+([/?].*)?$";
 
-        String output = input.replaceAll(regex, "");
+        String output = input.replaceAll(urlRegex, "");
 
         return output;
     }
