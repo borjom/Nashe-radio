@@ -1,0 +1,23 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    tools:context="com.randomname.vlad.nasheradio.activitys.FullSreenPhotoActivity">
+
+    <com.randomname.vlad.nasheradio.Views.TouchImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/full_screen_photo"
+        android:background="#000000"
+     />
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:minHeight="?attr/actionBarSize"
+        style="@style/Widget.MyApp.ActionBar"
+        android:background="#000000"
+    />
+
+</RelativeLayout>

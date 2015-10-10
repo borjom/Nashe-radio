@@ -1,8 +1,10 @@
 package com.randomname.vlad.nasheradio.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.format.DateFormat;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,8 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.randomname.vlad.nasheradio.R;
+import com.randomname.vlad.nasheradio.activitys.FullSreenPhotoActivity;
+import com.randomname.vlad.nasheradio.util.Constants;
 import com.randomname.vlad.nasheradio.util.StringUtils;
 import com.squareup.picasso.Picasso;
 import com.vk.sdk.api.VKApi;
@@ -23,7 +28,10 @@ import com.vk.sdk.api.model.VKAttachments;
 import com.vk.sdk.api.model.VKList;
 import com.vk.sdk.api.model.VKPostArray;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.CustomViewHolder> {
     private VKPostArray wallPosts;
@@ -43,9 +51,11 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.CustomViewHold
     }
 
     @Override
-    public void onBindViewHolder(CustomViewHolder customViewHolder, int i) {
+    public void onBindViewHolder(final CustomViewHolder customViewHolder, int i) {
 
         VKApiPost wallPost = wallPosts.get(i);
+
+        Long dateLong = wallPost.date;
 
         String postText = wallPost.text;
         String imageURL = "";
@@ -78,8 +88,19 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.CustomViewHold
             }
         }
 
+        if (dateLong > 0) {
+            long millisecond = dateLong * 1000;
+            String dateString= DateFormat.format("dd MMMM kk:mm", new Date(millisecond)).toString();
+
+            customViewHolder.dateText.setText(dateString);
+        }
+
         if (!postText.isEmpty()) {
-            customViewHolder.newsText.setText(StringUtils.removeURLFromString(postText));
+
+            postText = StringUtils.removeURLFromString(postText);
+            postText = StringUtils.replaceVkLink(postText);
+
+            customViewHolder.newsText.setText(Html.fromHtml(postText));
         } else {
             customViewHolder.newsText.setText("");
         }
@@ -134,7 +155,11 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.CustomViewHold
             }
 
             if (!repostText.isEmpty()) {
-                customViewHolder.newsText.setText(StringUtils.removeURLFromString(repostText));
+
+                repostText = StringUtils.removeURLFromString(repostText);
+                repostText = StringUtils.replaceVkLink(repostText);
+
+                customViewHolder.newsText.setText(Html.fromHtml(repostText));
             } else {
                 customViewHolder.newsText.setText("");
             }
@@ -160,6 +185,16 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.CustomViewHold
 
             setClickableText(customViewHolder.newsLink, vkPostUrl);
         }
+
+        final String finalURL = !imageURL.isEmpty() ? imageURL : repostImageURL;
+        customViewHolder.newsImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, FullSreenPhotoActivity.class);
+                intent.putExtra(Constants.INTENT_EXTRA.PHOTO_EXTRA, finalURL);
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -168,15 +203,18 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.CustomViewHold
     }
 
     public class CustomViewHolder extends RecyclerView.ViewHolder {
-        protected TextView newsText;
-        protected TextView newsLink;
+        protected TextView newsText, dateText, newsLink;
         protected ImageView newsImage;
 
         public CustomViewHolder(View view) {
             super(view);
             this.newsText = (TextView) view.findViewById(R.id.news_text);
+            this.dateText = (TextView) view.findViewById(R.id.news_date_text);
             this.newsLink = (TextView) view.findViewById(R.id.news_link_text);
             this.newsImage = (ImageView) view.findViewById(R.id.news_image);
+
+            this.newsText.setClickable(true);
+            this.newsText.setMovementMethod (LinkMovementMethod.getInstance());
         }
     }
 

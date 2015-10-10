@@ -47,10 +47,10 @@
             android:fadingEdge="horizontal"
             android:id="@+id/song_name"
             android:textColor="@color/accent_material_dark"
-            android:text="Наше радио"
             android:layout_gravity="center_horizontal"
-            android:layout_marginRight="16dp"
-            android:layout_marginLeft="16dp">
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginRight="2dp">
             <requestFocus/>
         </TextView>
 
@@ -61,8 +61,9 @@
             android:background="#00000000"
             android:src="@android:drawable/ic_media_play"
             android:layout_gravity="center_horizontal"
-            android:layout_marginRight="8dp"
-            android:contentDescription="@string/notification_play_icon" />
+            android:contentDescription="@string/notification_play_icon"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp" />
 
     </LinearLayout>
 </RelativeLayout>

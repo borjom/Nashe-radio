@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:res="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -17,7 +18,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/cv"
-        android:clickable="false">
+        res:cardBackgroundColor="#ffffff"
+        res:cardElevation="2dp"
+        res:cardUseCompatPadding="true"
+    >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -25,17 +29,27 @@
             android:padding="8dp"
             android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/news_date_text"
+                />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:id="@+id/news_image"
                 android:adjustViewBounds="true"
-                android:scaleType="centerCrop" />
+                android:scaleType="centerCrop"
+                android:layout_gravity="center_horizontal" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/news_text"
+                android:textColorLink="@color/colorPrimary"
+                android:layout_marginTop="4dp"
                 />
 
             <TextView

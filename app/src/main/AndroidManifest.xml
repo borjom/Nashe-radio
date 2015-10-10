@@ -7,8 +7,8 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-        android:allowBackup="true"
         android:name=".NasheApplication"
+        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
@@ -25,8 +25,8 @@
         <activity
             android:name="com.vk.sdk.VKServiceActivity"
             android:label="ServiceActivity"
-            android:theme="@style/VK.Transparent"
-        />
+            android:theme="@style/VK.Transparent" />
+
         <service
             android:name=".services.MusicService"
             android:enabled="true"
@@ -36,6 +36,10 @@
         <activity
             android:name=".activitys.SettingsActivity"
             android:label="@string/title_activity_preferences" >
+        </activity>
+        <activity
+            android:name=".activitys.FullSreenPhotoActivity"
+            android:label="@string/title_activity_full_sreen_photo" >
         </activity>
     </application>
 

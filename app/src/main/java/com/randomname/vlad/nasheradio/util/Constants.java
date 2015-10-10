@@ -51,4 +51,8 @@ public class Constants {
                 }
         };
     }
+
+    public interface INTENT_EXTRA {
+        public static String PHOTO_EXTRA = "photoExtra";
+    }
 }

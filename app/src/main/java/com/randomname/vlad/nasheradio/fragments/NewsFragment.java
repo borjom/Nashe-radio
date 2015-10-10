@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.randomname.vlad.nasheradio.LayoutManagers.PreCachingLayoutManager;
 import com.randomname.vlad.nasheradio.R;
 import com.randomname.vlad.nasheradio.adapters.LastSongsAdapter;
 import com.randomname.vlad.nasheradio.adapters.NewsAdapter;
@@ -42,7 +43,7 @@ public class NewsFragment extends Fragment {
 
     @Bind(R.id.news_recycler_view)
     RecyclerView newsRecyclerView;
-    LinearLayoutManager mLinearLayoutManager;
+    PreCachingLayoutManager mLinearLayoutManager;
 
     VKPostArray newsPosts;
     NewsAdapter newsAdapter;
@@ -60,7 +61,7 @@ public class NewsFragment extends Fragment {
         View view = inflater.inflate(R.layout.news_fragment, container, false);
         ButterKnife.bind(this, view);
 
-        mLinearLayoutManager = new LinearLayoutManager(getActivity());
+        mLinearLayoutManager = new PreCachingLayoutManager(getActivity());
 
         newsRecyclerView.setItemAnimator(new DefaultItemAnimator());
         newsRecyclerView.setLayoutManager(mLinearLayoutManager);
