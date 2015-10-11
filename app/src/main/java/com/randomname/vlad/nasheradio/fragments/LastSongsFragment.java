@@ -17,6 +17,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.randomname.vlad.nasheradio.R;
 import com.randomname.vlad.nasheradio.adapters.LastSongsAdapter;
@@ -121,6 +122,7 @@ public class LastSongsFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
+                Toast.makeText(getActivity(), R.string.error_connetion, Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -30,4 +30,5 @@
     <string name="nashe_news_title">Nashe news</string>
     <string name="title_activity_full_sreen_photo">FullSreenPhotoActivity</string>
     <string name="drawler_chart">Chart</string>
+    <string name="error_connetion">Failed to connect</string>
 </resources>

@@ -117,7 +117,7 @@ public class ChartFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-
+                Toast.makeText(getActivity(), R.string.error_connetion, Toast.LENGTH_SHORT).show();
             }
         });
     }

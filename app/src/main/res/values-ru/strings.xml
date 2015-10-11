@@ -27,4 +27,5 @@
     <string name="drawer_nashe_news">Наши новости</string>
     <string name="nashe_news_title">Наши новости</string>
     <string name="drawler_chart">Чартова дюжина</string>
+    <string name="error_connetion">Произошла ошибка соединения с сервером</string>
 </resources>
