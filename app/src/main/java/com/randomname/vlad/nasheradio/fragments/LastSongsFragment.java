@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 
 import com.randomname.vlad.nasheradio.R;
 import com.randomname.vlad.nasheradio.adapters.LastSongsAdapter;
+import com.randomname.vlad.nasheradio.adapters.SpacesItemDecoration;
 import com.randomname.vlad.nasheradio.api.NasheApi;
 import com.randomname.vlad.nasheradio.models.NasheModel;
 import com.randomname.vlad.nasheradio.util.Constants;
@@ -72,6 +73,7 @@ public class LastSongsFragment extends Fragment {
 
         lastSongsRecycler.setItemAnimator(new DefaultItemAnimator());
         lastSongsRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+        lastSongsRecycler.addItemDecoration(new SpacesItemDecoration(1));
 
         if (savedInstanceState == null) {
             lastSongsArray = new ArrayList<>();

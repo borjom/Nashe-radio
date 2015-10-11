@@ -31,11 +31,13 @@ public class LastSongsAdapter extends RecyclerView.Adapter<LastSongsAdapter.Cust
 
     @Override
     public void onBindViewHolder(CustomViewHolder customViewHolder, int i) {
-        String song = lastSongsArray.get(i);
+        String songInfo = lastSongsArray.get(i);
 
-        customViewHolder.textView.setText(song);
+        String time = songInfo.substring(0, 5);
+        String song = songInfo.substring(6);
 
-
+        customViewHolder.timeTextView.setText(time);
+        customViewHolder.songTextView.setText(song);
     }
 
     @Override
@@ -44,11 +46,12 @@ public class LastSongsAdapter extends RecyclerView.Adapter<LastSongsAdapter.Cust
     }
 
     public class CustomViewHolder extends RecyclerView.ViewHolder {
-        protected TextView textView;
+        protected TextView timeTextView, songTextView;
 
         public CustomViewHolder(View view) {
             super(view);
-            this.textView = (TextView) view.findViewById(R.id.title);
+            this.timeTextView = (TextView) view.findViewById(R.id.time_text_view);
+            this.songTextView = (TextView) view.findViewById(R.id.song_text_view);
         }
     }
 }
