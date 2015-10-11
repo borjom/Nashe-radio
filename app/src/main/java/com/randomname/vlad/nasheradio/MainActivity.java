@@ -23,6 +23,7 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.randomname.vlad.nasheradio.activitys.SettingsActivity;
+import com.randomname.vlad.nasheradio.fragments.ChartFragment;
 import com.randomname.vlad.nasheradio.fragments.LastSongsFragment;
 import com.randomname.vlad.nasheradio.fragments.MainFragment;
 import com.randomname.vlad.nasheradio.fragments.NewsFragment;
@@ -181,7 +182,8 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Main
                 .addDrawerItems(
                         new PrimaryDrawerItem().withName(R.string.drawler_player),
                         new PrimaryDrawerItem().withName(R.string.drawler_last_songs),
-                        new PrimaryDrawerItem().withName(R.string.drawer_nashe_news)
+                        new PrimaryDrawerItem().withName(R.string.drawer_nashe_news),
+                        new PrimaryDrawerItem().withName(R.string.drawler_chart)
                 )
                 .build();
         navDrawler.setSelectionAtPosition(selectedPosition);
@@ -223,6 +225,17 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Main
                             ft.replace(R.id.main_frame,fragment,"NasheNewsTag");
                             ft.commit();
                             getSupportActionBar().setTitle(R.string.nashe_news_title);
+                            navDrawler.closeDrawer();
+                        }
+                        break;
+                    case 3:
+                        fragment = fm.findFragmentByTag("ChartTag");
+                        if (fragment == null) {
+                            FragmentTransaction ft = fm.beginTransaction();
+                            fragment = new ChartFragment();
+                            ft.replace(R.id.main_frame,fragment,"ChartTag");
+                            ft.commit();
+                            getSupportActionBar().setTitle(R.string.drawler_chart);
                             navDrawler.closeDrawer();
                         }
                         break;

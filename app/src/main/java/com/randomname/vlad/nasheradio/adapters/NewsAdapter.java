@@ -6,20 +6,17 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.format.DateFormat;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.randomname.vlad.nasheradio.R;
 import com.randomname.vlad.nasheradio.activitys.FullSreenPhotoActivity;
 import com.randomname.vlad.nasheradio.util.Constants;
 import com.randomname.vlad.nasheradio.util.StringUtils;
 import com.squareup.picasso.Picasso;
-import com.vk.sdk.api.VKApi;
 import com.vk.sdk.api.VKApiConst;
 import com.vk.sdk.api.model.VKApiLink;
 import com.vk.sdk.api.model.VKApiPhoto;
@@ -28,10 +25,7 @@ import com.vk.sdk.api.model.VKAttachments;
 import com.vk.sdk.api.model.VKList;
 import com.vk.sdk.api.model.VKPostArray;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.CustomViewHolder> {
     private VKPostArray wallPosts;
@@ -46,8 +40,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.CustomViewHold
     public CustomViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.news_row, null);
 
-        CustomViewHolder viewHolder = new CustomViewHolder(view);
-        return viewHolder;
+        return new CustomViewHolder(view);
     }
 
     @Override
