@@ -20,6 +20,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import com.randomname.vlad.nasheradio.MainActivity;
 import com.randomname.vlad.nasheradio.R;
@@ -71,6 +72,7 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
 
         audioManager = (AudioManager) getSystemService(getApplicationContext().AUDIO_SERVICE);
         initMusicPlayer();
+
         initNotification();
 
         restAdapter = new RestAdapter.Builder()
@@ -194,11 +196,13 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
 
     @Override
     public void onDestroy() {
-        player.release();
-        stopUpdating();
+        if (!isPlaying || !isInForeground) {
+            player.release();
+            stopUpdating();
 
-        if (powerReceiver != null) {
-            unregisterReceiver(powerReceiver);
+            if (powerReceiver != null) {
+                unregisterReceiver(powerReceiver);
+            }
         }
 
         super.onDestroy();
@@ -206,14 +210,16 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
-        stopForeground(true);
-        isInForeground = false;
         inPreparedState = false;
 
-        Intent intent = new Intent(Constants.BROADCAST_ACTION.MUSIC_EVENT);
-        intent.putExtra(Constants.BROADCAST_ACTION.MESSAGE, Constants.BROADCAST_ACTION.MUSIC_ERROR);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-        return false;
+        if (what == MediaPlayer.MEDIA_ERROR_SERVER_DIED) {
+            Toast.makeText(getApplicationContext(), "server connection died", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getApplicationContext(), "unknown error", Toast.LENGTH_SHORT).show();
+        }
+
+        startPlaying();
+        return true;
     }
 
     @Override
@@ -234,6 +240,24 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
                     notification);
             isInForeground = true;
         }
+
+        if (isPlaying) {
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                notification.contentView.setImageViewResource(R.id.player_pause, android.R.drawable.ic_media_pause);
+            }
+        } else {
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                notification.contentView.setImageViewResource(R.id.player_pause, android.R.drawable.ic_media_play);
+            }
+        }
+
+        NotificationManager mNotificationManager = (NotificationManager)
+                getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
+
+        mNotificationManager.notify(
+                Constants.NOTIFICATION_ID.FOREGROUND_SERVICE,
+                notification);
+
         Intent intent = new Intent(Constants.BROADCAST_ACTION.MUSIC_EVENT);
         intent.putExtra(Constants.BROADCAST_ACTION.MESSAGE, Constants.BROADCAST_ACTION.START_MUSIC);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
@@ -291,8 +315,14 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
                 .setOngoing(true);
 
         RemoteViews m_view = new RemoteViews(getApplicationContext().getPackageName(), R.layout.notification_player);
-        m_view.setImageViewResource(R.id.player_pause, android.R.drawable.ic_media_pause);
-        m_view.setTextViewText(R.id.song_name, "");
+
+        if (isPlaying) {
+            m_view.setImageViewResource(R.id.player_pause, android.R.drawable.ic_media_pause);
+        } else {
+            m_view.setImageViewResource(R.id.player_pause, android.R.drawable.ic_media_play);
+        }
+
+        m_view.setTextViewText(R.id.song_name, "new text");
         m_builder.setContent(m_view);
         m_builder.setContentIntent(pendingIntent);
 

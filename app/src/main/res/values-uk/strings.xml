@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Наше радіо</string>
+    <string name="nashe_label">НАШЕ Радіо</string>
+    <string name="nashe20_label">НАШЕ Радіо 2.0</string>
+    <string name="action_settings">Налаштування</string>
+    <string name="album_art_cover">Обкладинка альбому</string>
+    <string name="backgound_image">Фонове зображення</string>
+    <string name="high_quality">Висока якість</string>
+    <string name="low_quality">Нізька якість</string>
+    <string name="pref_AlbumArtQuality">Якість картинок</string>
+    <string name="pref_AlbumArtQualityTitle">Віберіть якість картинок</string>
+    <string name="title_activity_preferences">Налаштування</string>
+    <string name="pref_albumArtQuality_high">Висока</string>
+    <string name="pref_albumArtQuality_low">Нізька</string>
+    <string name="pref_albumArtQuality_middle">Середня</string>
+    <string name="pref_albumArtQuality_none">Не завантажувати</string>
+    <string name="pref_albumArtQuality_ultra_high">Ультра висока</string>
+    <string name="stop_player_on_exit">Зупиняти програвач при виході</string>
+    <string name="stop_player_on_exit_title">Кнопка назад</string>
+    <string name="close_icon_description">іконка закрити</string>
+    <string name="notification_icon_description">іконка наше радіо</string>
+    <string name="notification_play_icon">іконка грати</string>
+    <string name="drawler_last_songs">Останні пісні</string>
+    <string name="drawler_player">Плеєр</string>
+    <string name="drawer_nashe_news">Наші новини</string>
+    <string name="nashe_news_title">Наші новини</string>
+    <string name="drawler_chart">Чартова дюжина</string>
+</resources>
