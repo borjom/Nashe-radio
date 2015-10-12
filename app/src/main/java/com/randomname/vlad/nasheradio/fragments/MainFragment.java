@@ -140,8 +140,6 @@ public class MainFragment extends Fragment implements ViewSwitcher.ViewFactory {
             textArtist.setText(savedInstanceState.getString(ARTIST_KEY));
         }
 
-        setIsPlaying(MusicService.getIsPlaying());
-
         return view;
     }
 
@@ -177,6 +175,8 @@ public class MainFragment extends Fragment implements ViewSwitcher.ViewFactory {
             public void failure(RetrofitError error) {
             }
         });
+
+        setIsPlaying(MusicService.getIsPlaying());
     }
 
     @Override
