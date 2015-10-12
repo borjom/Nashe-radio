@@ -16,7 +16,6 @@
 
     <style name="ThemeOverlay.MyApp.ActionBar" parent="ThemeOverlay.AppCompat.ActionBar">
         <item name="android:textColorPrimary">@color/toolbar_primary_text</item>
-        <item name="android:textColorSecondary">@color/accent</item>
     </style>
 
     <style name="SwitchButtonStyle">
