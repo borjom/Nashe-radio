@@ -69,7 +69,16 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.CustomViewHold
                     VKApiPhoto photo = (VKApiPhoto) attachment;
 
                     if (imageURL.isEmpty()) {
-                        imageURL = photo.photo_604;
+                        imageURL = photo.photo_2560;
+                        if (imageURL.isEmpty()) {
+                            imageURL = photo.photo_1280;
+                        }
+                        if (imageURL.isEmpty()) {
+                            imageURL = photo.photo_807;
+                        }
+                        if (imageURL.isEmpty()) {
+                            imageURL = photo.photo_604;
+                        }
                     }
                 } else if (attachment.getType().equals("link")) {
                     VKApiLink link = (VKApiLink) attachment;

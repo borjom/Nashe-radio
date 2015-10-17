@@ -100,6 +100,114 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
         registerReceiver(powerReceiver, intentFilter);
     }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent != null && intent.getAction() != null && intent.getAction().equals(Constants.ACTION.STOP_FOREGROUND_ACTION)) {
+            stopPlaying();
+            stopForeground(true);
+            isInForeground = false;
+        } else if (intent != null && intent.getAction() != null && intent.getAction().equals(Constants.ACTION.PAUSE_PLAY_ACTION)) {
+            toggleNotificationPausePlay();
+        }
+
+        return START_STICKY;
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return mBinder;
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        return false;
+    }
+
+    @Override
+    public void onDestroy() {
+        if (!isPlaying || !isInForeground) {
+            player.release();
+            stopUpdating();
+
+            if (powerReceiver != null) {
+                unregisterReceiver(powerReceiver);
+            }
+        }
+
+        super.onDestroy();
+    }
+
+    @Override
+    public boolean onError(MediaPlayer mp, int what, int extra) {
+        inPreparedState = false;
+
+        startPlaying();
+        return true;
+    }
+
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+        player.start();
+        isPlaying = true;
+        inPreparedState = false;
+
+        if (restartAfterPreparation) {
+            restartAfterPreparation = false;
+            stopPlaying();
+            startPlaying();
+            return;
+        }
+
+        if (!isInForeground) {
+            startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE,
+                    notification);
+            isInForeground = true;
+        }
+
+        if (isPlaying) {
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                notification.contentView.setImageViewResource(R.id.player_pause, android.R.drawable.ic_media_pause);
+            }
+        } else {
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                notification.contentView.setImageViewResource(R.id.player_pause, android.R.drawable.ic_media_play);
+            }
+        }
+
+        NotificationManager mNotificationManager = (NotificationManager)
+                getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
+
+        mNotificationManager.notify(
+                Constants.NOTIFICATION_ID.FOREGROUND_SERVICE,
+                notification);
+
+        Intent intent = new Intent(Constants.BROADCAST_ACTION.MUSIC_EVENT);
+        intent.putExtra(Constants.BROADCAST_ACTION.MESSAGE, Constants.BROADCAST_ACTION.START_MUSIC);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
+        getCurrentSong();
+    }
+
+    @Override
+    public void onAudioFocusChange(int focusChange) {
+        if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
+            player.stop();
+            isPlaying = false;
+        } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+           startPlaying();
+        } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+            audioManager.abandonAudioFocus(this);
+        }
+
+    }
+
+    public class LocalBinder extends Binder {
+        public MusicService getService() {
+            // Return this instance of LocalService so clients can call public methods
+            return MusicService.this;
+        }
+    }
+
     private void updateNotification(NasheModel nasheModel) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             notification.contentView.setTextViewText(R.id.song_name, nasheModel.getSong());
@@ -171,120 +279,6 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent != null && intent.getAction() != null && intent.getAction().equals(Constants.ACTION.STOP_FOREGROUND_ACTION)) {
-            stopPlaying();
-            stopForeground(true);
-            isInForeground = false;
-        } else if (intent != null && intent.getAction() != null && intent.getAction().equals(Constants.ACTION.PAUSE_PLAY_ACTION)) {
-            toggleNotificationPausePlay();
-        }
-
-        return START_STICKY;
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        return mBinder;
-    }
-
-    @Override
-    public boolean onUnbind(Intent intent) {
-        return false;
-    }
-
-    @Override
-    public void onDestroy() {
-        if (!isPlaying || !isInForeground) {
-            player.release();
-            stopUpdating();
-
-            if (powerReceiver != null) {
-                unregisterReceiver(powerReceiver);
-            }
-        }
-
-        super.onDestroy();
-    }
-
-    @Override
-    public boolean onError(MediaPlayer mp, int what, int extra) {
-        inPreparedState = false;
-
-        if (what == MediaPlayer.MEDIA_ERROR_SERVER_DIED) {
-            Toast.makeText(getApplicationContext(), "server connection died", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(getApplicationContext(), "unknown error", Toast.LENGTH_SHORT).show();
-        }
-
-        startPlaying();
-        return true;
-    }
-
-    @Override
-    public void onPrepared(MediaPlayer mp) {
-        player.start();
-        isPlaying = true;
-        inPreparedState = false;
-
-        if (restartAfterPreparation) {
-            restartAfterPreparation = false;
-            stopPlaying();
-            startPlaying();
-            return;
-        }
-
-        if (!isInForeground) {
-            startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE,
-                    notification);
-            isInForeground = true;
-        }
-
-        if (isPlaying) {
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                notification.contentView.setImageViewResource(R.id.player_pause, android.R.drawable.ic_media_pause);
-            }
-        } else {
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                notification.contentView.setImageViewResource(R.id.player_pause, android.R.drawable.ic_media_play);
-            }
-        }
-
-        NotificationManager mNotificationManager = (NotificationManager)
-                getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
-
-        mNotificationManager.notify(
-                Constants.NOTIFICATION_ID.FOREGROUND_SERVICE,
-                notification);
-
-        Intent intent = new Intent(Constants.BROADCAST_ACTION.MUSIC_EVENT);
-        intent.putExtra(Constants.BROADCAST_ACTION.MESSAGE, Constants.BROADCAST_ACTION.START_MUSIC);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-
-        getCurrentSong();
-    }
-
-    @Override
-    public void onAudioFocusChange(int focusChange) {
-        if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
-            player.stop();
-            isPlaying = false;
-        } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
-           startPlaying();
-        } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
-            audioManager.abandonAudioFocus(this);
-        }
-
-    }
-
-    public class LocalBinder extends Binder {
-        public MusicService getService() {
-            // Return this instance of LocalService so clients can call public methods
-            return MusicService.this;
-        }
-    }
-
     private void initMusicPlayer() {
         player = new MediaPlayer();
         player.setWakeMode(getApplicationContext(),
@@ -322,7 +316,7 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
             m_view.setImageViewResource(R.id.player_pause, android.R.drawable.ic_media_play);
         }
 
-        m_view.setTextViewText(R.id.song_name, "new text");
+        m_view.setTextViewText(R.id.song_name, "");
         m_builder.setContent(m_view);
         m_builder.setContentIntent(pendingIntent);
 
@@ -360,7 +354,7 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
         try {
             player.setDataSource(prefs.getString(
                     Constants.SHARED_PREFERENCES.CURRENT_CHANNEL,
-                    "http://nashe.streamr.ru/nashe-128.mp3"
+                    "http://81.19.85.200/nashe128.mp3"
             ));
         } catch (Exception e) {
             e.printStackTrace();

@@ -8,8 +8,8 @@ android {
         applicationId "com.randomname.vlad.nasheradio"
         minSdkVersion 10
         targetSdkVersion 23
-        versionCode 3
-        versionName "1.1"
+        versionCode 5
+        versionName "1.12"
     }
     buildTypes {
         release {

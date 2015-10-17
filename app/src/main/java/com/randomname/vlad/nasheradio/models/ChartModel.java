@@ -9,6 +9,8 @@ public class ChartModel implements Parcelable {
 
     private String changeState;
 
+    public ChartModel() {
+    }
 
     public ChartModel(Parcel in) {
         song = in.readString();
